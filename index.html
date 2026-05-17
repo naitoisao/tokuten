@@ -524,7 +524,8 @@ function renderTokuten() {
 }
 
 // メルマガCTAリンク設定
-document.getElementById('mailCtaLink').href = MAIL_CTA_URL;
+const mailCtaLink = document.getElementById('mailCtaLink');
+if (mailCtaLink) mailCtaLink.href = MAIL_CTA_URL;
 
 renderTokuten();
 </script>
