@@ -491,18 +491,20 @@ const tokutenList = [
 function renderTokuten() {
   const openContainer = document.getElementById('openTokuten');
   const lockedContainer = document.getElementById('lockedTokuten');
+  const isUnlocked = new URLSearchParams(window.location.search).get('unlocked') === 'true';
 
   tokutenList.forEach((item, i) => {
     const isLocked = item.area === 'locked';
-    if (isLocked) return; // 特典内容準備中のため非表示
+    if (isLocked && !isUnlocked) return; // 特典内容準備中のため非表示（?unlocked=trueで解除）
 
-    const card = document.createElement(isLocked ? 'div' : 'a');
-    if (!isLocked) {
+    const showAsLocked = isLocked && !isUnlocked;
+    const card = document.createElement(showAsLocked ? 'div' : 'a');
+    if (!showAsLocked) {
       card.href = item.url;
       card.target = '_blank';
       card.rel = 'noopener';
     }
-    card.className = `tokuten-card fade-up${isLocked ? ' locked' : ''}`;
+    card.className = `tokuten-card fade-up${showAsLocked ? ' locked' : ''}`;
 
     const newBadge = item.isNew ? '<span class="new-badge">NEW</span>' : '';
 
