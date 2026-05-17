@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE登録特典｜simpleworks.jp</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF7F3;
+  --card-bg: #FFFFFF;
+  --primary: #7B6B5D;
+  --primary-light: #A89888;
+  --accent: #D4A574;
+  --accent-light: #F0DCC8;
+  --accent-glow: rgba(212, 165, 116, 0.15);
+  --text: #4A4039;
+  --text-light: #8A7D73;
+  --border: #E8E0D8;
+  --locked-bg: #F5F1EC;
+  --locked-border: #DDD6CD;
+  --success: #6B9E78;
+  --shadow: 0 2px 16px rgba(123, 107, 93, 0.08);
+  --shadow-hover: 0 6px 28px rgba(123, 107, 93, 0.15);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  min-height: 100vh;
+}
+
+/* ヒーローセクション */
+.hero {
+  background: linear-gradient(160deg, #7B6B5D 0%, #A89888 50%, #D4A574 100%);
+  padding: 48px 20px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  color: white;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.hero h1 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  position: relative;
+}
+
+.hero p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.7;
+  position: relative;
+}
+
+/* コンテナ */
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+
+/* セクションタイトル */
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0 20px;
+}
+
+.section-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.section-icon.open {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+}
+
+.section-icon.locked {
+  background: var(--locked-bg);
+  border: 2px solid var(--locked-border);
+}
+
+.section-title-text h2 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.4;
+}
+
+.section-title-text p {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* 特典カード */
+.tokuten-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: box-shadow 0.3s, transform 0.2s;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.tokuten-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.tokuten-card::after {
+  content: '→';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+  transition: transform 0.3s;
+}
+
+.tokuten-card:hover::after {
+  transform: translateY(-50%) translateX(4px);
+}
+
+.tokuten-emoji {
+  width: 48px;
+  height: 48px;
+  background: var(--accent-glow);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tokuten-info {
+  flex: 1;
+  padding-right: 24px;
+}
+
+.tokuten-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+}
+
+.tokuten-tag.tool {
+  background: #E8F4EC;
+  color: #4A8B5C;
+}
+
+.tokuten-tag.pdf {
+  background: #EAE4F4;
+  color: #7A5CA8;
+}
+
+.tokuten-tag.video {
+  background: #E4EEF8;
+  color: #5178A8;
+}
+
+.tokuten-tag.checklist {
+  background: #FFF3E0;
+  color: #B87A2B;
+}
+
+.tokuten-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.tokuten-desc {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* ロック状態のカード */
+.tokuten-card.locked {
+  background: var(--locked-bg);
+  cursor: default;
+  border: 2px dashed var(--locked-border);
+  box-shadow: none;
+}
+
+.tokuten-card.locked:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.tokuten-card.locked::after {
+  content: '🔒';
+  font-size: 16px;
+}
+
+.tokuten-card.locked:hover::after {
+  transform: translateY(-50%);
+}
+
+.tokuten-card.locked .tokuten-emoji {
+  opacity: 0.5;
+  filter: grayscale(50%);
+}
+
+.tokuten-card.locked .tokuten-title,
+.tokuten-card.locked .tokuten-desc {
+  opacity: 0.6;
+}
+
+/* メルマガ登録CTA */
+.mail-cta {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+  text-align: center;
+  border: 2px solid var(--accent-light);
+}
+
+.mail-cta h3 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.mail-cta p {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.mail-cta-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--accent) 0%, #C4956A 100%);
+  color: white;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(212, 165, 116, 0.35);
+  transition: all 0.3s;
+}
+
+.mail-cta-btn:hover {
+  box-shadow: 0 6px 24px rgba(212, 165, 116, 0.5);
+  transform: translateY(-2px);
+}
+
+/* NEW バッジ */
+.new-badge {
+  display: inline-block;
+  background: #E85D5D;
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.05em;
+}
+
+/* フッター */
+.footer {
+  text-align: center;
+  padding: 24px 20px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.footer a {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+/* アニメーション */
+.fade-up {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up:nth-child(1) { animation-delay: 0.05s; }
+.fade-up:nth-child(2) { animation-delay: 0.1s; }
+.fade-up:nth-child(3) { animation-delay: 0.15s; }
+.fade-up:nth-child(4) { animation-delay: 0.2s; }
+.fade-up:nth-child(5) { animation-delay: 0.25s; }
+
+@media (max-width: 480px) {
+  .hero { padding: 36px 16px 32px; }
+  .hero h1 { font-size: 22px; }
+  .tokuten-card { padding: 16px; gap: 12px; }
+  .tokuten-emoji { width: 42px; height: 42px; font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🎁 LINE登録者限定</div>
+  <h1>あなたのビジネスに<br>すぐ使える特典集</h1>
+  <p>ツールもテンプレートも、全部ここから使えます</p>
+</div>
+
+<div class="container">
+
+  <!-- ===== LINE特典エリア ===== -->
+  <div class="section-title">
+    <div class="section-icon open">🎁</div>
+    <div class="section-title-text">
+      <h2>LINE登録で使える特典</h2>
+      <p>すべて無料でご利用いただけます</p>
+    </div>
+  </div>
+
+  <div id="openTokuten"></div>
+
+  <!-- ===== メルマガ限定エリア ===== -->
+  <div class="section-title" style="margin-top: 44px;">
+    <div class="section-icon locked">✉️</div>
+    <div class="section-title-text">
+      <h2>メルマガ登録でさらに特典</h2>
+      <p>より深い内容をお届けします</p>
+    </div>
+  </div>
+
+  <div id="lockedTokuten"></div>
+
+  <!-- メルマガ登録CTA -->
+  <div class="mail-cta">
+    <h3>✉️ メルマガに登録して<br>すべての特典を受け取る</h3>
+    <p>自己紹介文の添削動画や用途別テンプレートなど<br>ここでしか受け取れない特典をお届けします</p>
+    <a href="#" id="mailCtaLink" class="mail-cta-btn">メルマガに登録する（無料）</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  Powered by <a href="https://simpleworks.jp" target="_blank">simpleworks.jp</a>
+</div>
+
+<script>
+// ==========================================
+// 特典データ（ここを編集するだけで追加・変更できます）
+// ==========================================
+
+const MAIL_CTA_URL = '#'; // ← MyASP登録フォームのURLに変更
+
+const tokutenList = [
+
+  // --- LINE特典（open） ---
+  {
+    area: 'open',
+    emoji: '✏️',
+    tag: 'tool',
+    tagLabel: 'AIツール',
+    title: '自己紹介文メーカー',
+    desc: '8つの質問に答えるだけでSNSの自己紹介文が完成',
+    url: 'https://jikoshokai-maker.vercel.app/', // ← 実際のURLに変更
+    isNew: true,
+  },
+  {
+    area: 'open',
+    emoji: '🔮',
+    tag: 'tool',
+    tagLabel: 'AIツール',
+    title: '天命ナビLITE',
+    desc: '5つの質問であなたの天命タイプがわかる無料診断',
+    url: '#', // ← 実際のURLに変更
+    isNew: false,
+  },
+  // {
+  //   area: 'open',
+  //   emoji: '📋',
+  //   tag: 'checklist',
+  //   tagLabel: 'チェックリスト',
+  //   title: '発信セルフチェックシート',
+  //   desc: 'あなたのSNS・ブログが「伝わっているか」15項目でチェック',
+  //   url: '#',
+  //   isNew: false,
+  // },
+
+  // --- メルマガ限定特典（locked） ---
+  {
+    area: 'locked',
+    emoji: '🎬',
+    tag: 'video',
+    tagLabel: '動画',
+    title: '自己紹介文の添削動画',
+    desc: 'AIが作った文章を「自分の言葉」に直す方法を実演',
+    url: '#',
+    isNew: false,
+  },
+  {
+    area: 'locked',
+    emoji: '📄',
+    tag: 'pdf',
+    tagLabel: 'テンプレート',
+    title: '用途別・自己紹介テンプレート集',
+    desc: 'セミナー・名刺・ブログなど6パターンの使い回し方',
+    url: '#',
+    isNew: false,
+  },
+  {
+    area: 'locked',
+    emoji: '📝',
+    tag: 'pdf',
+    tagLabel: 'PDF',
+    title: '選ばれる自己紹介 3つのNG × 3つのOK',
+    desc: '問い合わせにつながる自己紹介の共通点を実例で解説',
+    url: '#',
+    isNew: false,
+  },
+];
+
+// ==========================================
+// レンダリング（編集不要）
+// ==========================================
+
+function renderTokuten() {
+  const openContainer = document.getElementById('openTokuten');
+  const lockedContainer = document.getElementById('lockedTokuten');
+
+  tokutenList.forEach((item, i) => {
+    const isLocked = item.area === 'locked';
+
+    const card = document.createElement(isLocked ? 'div' : 'a');
+    if (!isLocked) {
+      card.href = item.url;
+      card.target = '_blank';
+      card.rel = 'noopener';
+    }
+    card.className = `tokuten-card fade-up${isLocked ? ' locked' : ''}`;
+
+    const newBadge = item.isNew ? '<span class="new-badge">NEW</span>' : '';
+
+    card.innerHTML = `
+      <div class="tokuten-emoji">${item.emoji}</div>
+      <div class="tokuten-info">
+        <span class="tokuten-tag ${item.tag}">${item.tagLabel}</span>
+        <div class="tokuten-title">${item.title}${newBadge}</div>
+        <div class="tokuten-desc">${item.desc}</div>
+      </div>
+    `;
+
+    if (isLocked) {
+      lockedContainer.appendChild(card);
+    } else {
+      openContainer.appendChild(card);
+    }
+  });
+}
+
+// メルマガCTAリンク設定
+document.getElementById('mailCtaLink').href = MAIL_CTA_URL;
+
+renderTokuten();
+</script>
+
+</body>
+</html>
