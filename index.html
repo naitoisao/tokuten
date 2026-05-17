@@ -386,7 +386,8 @@ body {
 
   <div id="openTokuten"></div>
 
-  <!-- ===== メルマガ限定エリア ===== -->
+  <!-- ===== メルマガ限定エリア（準備中のため非表示） ===== -->
+  <!--
   <div class="section-title" style="margin-top: 44px;">
     <div class="section-icon locked">✉️</div>
     <div class="section-title-text">
@@ -397,12 +398,12 @@ body {
 
   <div id="lockedTokuten"></div>
 
-  <!-- メルマガ登録CTA -->
   <div class="mail-cta">
     <h3>✉️ メルマガに登録して<br>すべての特典を受け取る</h3>
     <p>自己紹介文の添削動画や用途別テンプレートなど<br>ここでしか受け取れない特典をお届けします</p>
     <a href="#" id="mailCtaLink" class="mail-cta-btn">メルマガに登録する（無料）</a>
   </div>
+  -->
 
 </div>
 
@@ -515,7 +516,7 @@ function renderTokuten() {
     `;
 
     if (isLocked) {
-      lockedContainer.appendChild(card);
+      if (lockedContainer) lockedContainer.appendChild(card);
     } else {
       openContainer.appendChild(card);
     }
