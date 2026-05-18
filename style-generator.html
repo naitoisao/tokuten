@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自分らしい文章プロンプト ジェネレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4F0;
+  --card-bg: #FFFFFF;
+  --primary: #5B6E7C;
+  --primary-light: #8FA4B2;
+  --accent: #C87941;
+  --accent-light: #EDD5BE;
+  --accent-glow: rgba(200, 121, 65, 0.12);
+  --text: #3A3530;
+  --text-light: #7A6F66;
+  --border: #E2D9D0;
+  --success: #5A8F6A;
+  --success-light: #E8F4EC;
+  --warn: #C4783A;
+  --warn-light: #FFF4E8;
+  --info: #4A7A9B;
+  --info-light: #E8F0FF;
+  --shadow: 0 2px 20px rgba(91, 110, 124, 0.09);
+  --shadow-hover: 0 6px 32px rgba(91, 110, 124, 0.18);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  min-height: 100vh;
+}
+
+/* ====== HEADER ====== */
+.header {
+  background: linear-gradient(135deg, #2E3D45 0%, #4A5F6A 40%, #6B8090 100%);
+  padding: 48px 20px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60%; left: -20%;
+  width: 60%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.header p {
+  color: rgba(255,255,255,0.75);
+  font-size: 13px;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* ====== PROGRESS ====== */
+.progress-wrap {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+.progress-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.step-dot {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text-light);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.step-dot.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.step-dot.done { background: var(--success); border-color: var(--success); color: #fff; }
+.step-line { flex: 1; height: 2px; background: var(--border); border-radius: 2px; transition: background 0.3s; }
+.step-line.done { background: var(--success); }
+.step-label { font-size: 10px; color: var(--text-light); white-space: nowrap; margin: 0 2px; }
+.step-label.active { color: var(--accent); font-weight: 700; }
+
+/* ====== MAIN ====== */
+.main { max-width: 680px; margin: 0 auto; padding: 28px 16px 80px; }
+
+/* ====== PANELS ====== */
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+.result-panel { display: none; }
+.result-panel.active { display: block; }
+
+.step-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-num {
+  background: var(--accent);
+  color: #fff;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.step-desc {
+  color: var(--text-light);
+  font-size: 13px;
+  margin-bottom: 24px;
+  padding-left: 38px;
+}
+
+/* ====== CARDS ====== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.card-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-label .tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.tag-optional { background: var(--accent-light); color: var(--accent); }
+.tag-required { background: #F8E0E0; color: #B05050; }
+.tag-multi { background: var(--info-light); color: var(--info); }
+
+/* ====== INPUTS ====== */
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  resize: vertical;
+  transition: border-color 0.2s;
+  line-height: 1.7;
+}
+textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
+textarea::placeholder { color: #B0A59A; font-size: 13px; }
+input[type="text"] {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus { outline: none; border-color: var(--accent); background: #fff; }
+input[type="text"]::placeholder { color: #B0A59A; font-size: 13px; }
+
+/* ====== SLIDER ====== */
+.slider-wrap { margin-bottom: 22px; }
+.slider-wrap:last-child { margin-bottom: 0; }
+.slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.slider-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.slider-value-badge {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 10px;
+  min-width: 76px;
+  text-align: center;
+}
+.slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-light); margin-bottom: 4px; }
+input[type="range"] {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  background: var(--border);
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2px 8px rgba(200, 121, 65, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+/* ====== CHIPS ====== */
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 6px; }
+.chip {
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg);
+  user-select: none;
+}
+.chip:hover { border-color: var(--accent-light); }
+.chip.selected {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ====== ANALYSIS BOX ====== */
+.analysis-card {
+  background: var(--info-light);
+  border: 1.5px solid #C4D8E8;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.analysis-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--info);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.analysis-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.analysis-label {
+  width: 120px;
+  flex-shrink: 0;
+  font-weight: 500;
+  color: var(--text-light);
+}
+.analysis-value {
+  font-weight: 700;
+  color: var(--text);
+}
+.analysis-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: rgba(74, 122, 155, 0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.analysis-bar {
+  height: 100%;
+  background: var(--info);
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.analysis-note {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 14px;
+  line-height: 1.7;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.6);
+  border-radius: var(--radius-sm);
+}
+
+/* ====== WARN/FEEDBACK BOXES ====== */
+.feedback-box {
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.feedback-box.info { background: var(--info-light); border: 1px solid #C4D8E8; }
+.feedback-box.warn { background: var(--warn-light); border: 1px solid #E8D0B8; }
+.feedback-box.success { background: var(--success-light); border: 1px solid #B8D8C0; }
+.feedback-box strong { display: block; margin-bottom: 4px; }
+
+/* ====== BUTTONS ====== */
+.btn-row { display: flex; gap: 10px; margin-top: 28px; justify-content: flex-end; }
+.btn {
+  padding: 12px 28px;
+  border-radius: 40px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(200, 121, 65, 0.3);
+}
+.btn-primary:hover { background: #B06B35; transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--primary-light); }
+.btn-generate {
+  background: linear-gradient(135deg, #4A5F6A, #2E3D45);
+  color: #fff;
+  padding: 15px 36px;
+  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(46, 61, 69, 0.4);
+  width: 100%;
+}
+.btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(46, 61, 69, 0.5); }
+.btn-analyze {
+  background: var(--info);
+  color: #fff;
+  padding: 14px 36px;
+  font-size: 14px;
+  box-shadow: 0 3px 14px rgba(74, 122, 155, 0.35);
+  width: 100%;
+}
+.btn-analyze:hover { transform: translateY(-1px); }
+
+/* ====== RESULT ====== */
+.result-header {
+  background: linear-gradient(135deg, #2E3D45, #4A5F6A);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.result-header h3 { color: #fff; font-size: 15px; font-weight: 700; }
+.result-header p { color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 2px; }
+.copy-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Noto Sans JP', sans-serif;
+  flex-shrink: 0;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.2); }
+.copy-btn.copied { background: rgba(90, 143, 106, 0.5); }
+.result-body {
+  background: #1C272D;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 20px;
+  border: 1px solid #2E3A40;
+  border-top: none;
+  max-height: 500px;
+  overflow-y: auto;
+}
+#output-text {
+  font-family: 'Noto Sans JP', monospace;
+  font-size: 12px;
+  color: #C0D0D8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.85;
+}
+.result-tips {
+  margin-top: 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.result-tips h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+.tip-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 12px; color: var(--text-light); line-height: 1.6; }
+.tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.restart-btn {
+  display: block; width: 100%; margin-top: 20px; padding: 13px;
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: 40px;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 13px; font-weight: 700;
+  color: var(--text-light); cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.restart-btn:hover { border-color: var(--primary-light); color: var(--text); }
+
+/* ====== CHAR COUNTER ====== */
+.char-counter {
+  font-size: 11px;
+  color: var(--text-light);
+  text-align: right;
+  margin-top: 4px;
+}
+.char-counter.good { color: var(--success); }
+.char-counter.warn { color: var(--warn); }
+
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.hint-box {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-light);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  line-height: 1.7;
+}
+.hint-box strong { color: var(--accent); }
+
+/* ====== SAMPLE SLOT ====== */
+.sample-slot { margin-bottom: 14px; }
+.sample-slot-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+}
+.sample-slot-label { font-size: 12px; font-weight: 700; color: var(--text); }
+.sample-type-select {
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-light);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.add-sample-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px; border: 1.5px dashed var(--border); border-radius: var(--radius-sm);
+  background: transparent; font-size: 13px; color: var(--text-light);
+  cursor: pointer; transition: all 0.2s; width: 100%;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.add-sample-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 480px) {
+  .step-label { display: none; }
+  .btn-row { flex-direction: column-reverse; }
+  .btn { width: 100%; text-align: center; }
+  .analysis-row { flex-direction: column; align-items: flex-start; gap: 3px; }
+  .analysis-label { width: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">WRITING STYLE GENERATOR v2</div>
+  <h1>自分らしい文章プロンプト<br>ジェネレーター</h1>
+  <p>5ステップであなたの文体を分析・設定し、<br>ChatGPT・Claude・Gemini で使える<br>カスタムプロンプトを生成します。</p>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="step-dot active" id="dot-1">1</div>
+    <div class="step-label active" id="lbl-1">サンプル</div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step-dot" id="dot-2">2</div>
+    <div class="step-label" id="lbl-2">スタイル</div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step-dot" id="dot-3">3</div>
+    <div class="step-label" id="lbl-3">分析</div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step-dot" id="dot-4">4</div>
+    <div class="step-label" id="lbl-4">調整</div>
+    <div class="step-line" id="line-4"></div>
+    <div class="step-dot" id="dot-5">5</div>
+    <div class="step-label" id="lbl-5">生成</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ===== STEP 1: サンプル ===== -->
+<div class="step-panel active" id="step-1">
+  <div class="step-title"><div class="step-num">1</div>文章サンプルを貼り付ける</div>
+  <div class="step-desc">自分が書いた文章をできるだけ多く貼り付けてください。多いほど精度が上がります。</div>
+
+  <div class="hint-box">
+    <strong>ポイント</strong>
+    合計2,000文字以上あると精度が大きく上がります。SNS・ブログ・メールなど異なる場面の文章を入れると、「場面ごとの書き分け」まで再現できます。
+  </div>
+
+  <div class="card" id="samples-card">
+    <div class="card-label">文章サンプル <span class="tag tag-optional">任意・多いほど精度UP</span></div>
+
+    <div class="sample-slot" id="sample-slot-1">
+      <div class="sample-slot-header">
+        <span class="sample-slot-label">サンプル 1</span>
+        <select class="sample-type-select" id="sample-type-1">
+          <option value="">用途を選択</option>
+          <option value="SNS">SNS投稿</option>
+          <option value="ブログ">ブログ・note</option>
+          <option value="メルマガ">メルマガ</option>
+          <option value="メール">メール</option>
+          <option value="LINE">LINE・チャット</option>
+          <option value="仕事">仕事文書</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <textarea id="sample-1" rows="4" placeholder="自分が実際に書いた文章を貼り付けてください" oninput="updateCharCount()"></textarea>
+    </div>
+
+    <div class="sample-slot" id="sample-slot-2">
+      <div class="sample-slot-header">
+        <span class="sample-slot-label">サンプル 2</span>
+        <select class="sample-type-select" id="sample-type-2">
+          <option value="">用途を選択</option>
+          <option value="SNS">SNS投稿</option>
+          <option value="ブログ">ブログ・note</option>
+          <option value="メルマガ">メルマガ</option>
+          <option value="メール">メール</option>
+          <option value="LINE">LINE・チャット</option>
+          <option value="仕事">仕事文書</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <textarea id="sample-2" rows="4" placeholder="別の場面・トーンの文章があるとさらに精度UP" oninput="updateCharCount()"></textarea>
+    </div>
+
+    <div class="sample-slot" id="sample-slot-3">
+      <div class="sample-slot-header">
+        <span class="sample-slot-label">サンプル 3</span>
+        <select class="sample-type-select" id="sample-type-3">
+          <option value="">用途を選択</option>
+          <option value="SNS">SNS投稿</option>
+          <option value="ブログ">ブログ・note</option>
+          <option value="メルマガ">メルマガ</option>
+          <option value="メール">メール</option>
+          <option value="LINE">LINE・チャット</option>
+          <option value="仕事">仕事文書</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+      <textarea id="sample-3" rows="4" placeholder="" oninput="updateCharCount()"></textarea>
+    </div>
+
+    <div id="extra-samples"></div>
+
+    <button class="add-sample-btn" id="add-sample-btn" onclick="addSampleSlot()">＋ サンプルを追加する</button>
+
+    <div class="char-counter" id="total-chars">合計 0 文字（2,000文字以上推奨）</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goStep(2)">次へ →</button>
+  </div>
+</div>
+
+<!-- ===== STEP 2: スタイル設定 ===== -->
+<div class="step-panel" id="step-2">
+  <div class="step-title"><div class="step-num">2</div>あなたの文体スタイルを設定</div>
+  <div class="step-desc">選択式・スライダーであなたの文章の特徴を設定します。</div>
+
+  <!-- 一人称 -->
+  <div class="card">
+    <div class="card-label">一人称</div>
+    <div class="chip-group" id="chips-pronoun">
+      <div class="chip" data-group="pronoun" data-val="私（わたし）">私（わたし）</div>
+      <div class="chip" data-group="pronoun" data-val="私（わたくし）">私（わたくし）</div>
+      <div class="chip" data-group="pronoun" data-val="僕">僕</div>
+      <div class="chip" data-group="pronoun" data-val="俺">俺</div>
+      <div class="chip" data-group="pronoun" data-val="自分">自分</div>
+      <div class="chip" data-group="pronoun" data-val="あたし">あたし</div>
+      <div class="chip" data-group="pronoun" data-val="ウチ">ウチ</div>
+      <div class="chip" data-group="pronoun" data-val="省略が多い">省略が多い</div>
+    </div>
+    <input type="text" id="pronoun-custom" placeholder="上にない場合はここに入力（例：わし、おいら、うち）" style="margin-top:10px;">
+  </div>
+
+  <!-- スライダー群 -->
+  <div class="card">
+    <div class="card-label">トーン・テンション</div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-name">フォーマル度</span>
+        <span class="slider-value-badge" id="val-formal">自然体</span>
+      </div>
+      <div class="slider-labels"><span>カジュアル</span><span>フォーマル</span></div>
+      <input type="range" id="slider-formal" min="1" max="5" value="3" oninput="updateSlider('formal',this.value)">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-name">文の長さ</span>
+        <span class="slider-value-badge" id="val-length">ふつう</span>
+      </div>
+      <div class="slider-labels"><span>短くテンポよく</span><span>長く丁寧に</span></div>
+      <input type="range" id="slider-length" min="1" max="5" value="3" oninput="updateSlider('length',this.value)">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-name">感情・熱量</span>
+        <span class="slider-value-badge" id="val-emotion">ふつう</span>
+      </div>
+      <div class="slider-labels"><span>淡々・冷静</span><span>熱い・感情的</span></div>
+      <input type="range" id="slider-emotion" min="1" max="5" value="3" oninput="updateSlider('emotion',this.value)">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-name">語彙の専門度</span>
+        <span class="slider-value-badge" id="val-expert">ふつう</span>
+      </div>
+      <div class="slider-labels"><span>やさしい言葉</span><span>専門用語あり</span></div>
+      <input type="range" id="slider-expert" min="1" max="5" value="3" oninput="updateSlider('expert',this.value)">
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="slider-wrap">
+      <div class="slider-header">
+        <span class="slider-name">絵文字・記号</span>
+        <span class="slider-value-badge" id="val-emoji">たまに</span>
+      </div>
+      <div class="slider-labels"><span>使わない</span><span>多用する</span></div>
+      <input type="range" id="slider-emoji" min="1" max="5" value="2" oninput="updateSlider('emoji',this.value)">
+    </div>
+  </div>
+
+  <!-- 語尾 -->
+  <div class="card">
+    <div class="card-label">語尾スタイル <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-gobi">
+      <div class="chip" data-group="gobi" data-val="です・ます">です・ます</div>
+      <div class="chip" data-group="gobi" data-val="だ・である">だ・である</div>
+      <div class="chip" data-group="gobi" data-val="〜だよ・〜だよね">〜だよ・〜だよね</div>
+      <div class="chip" data-group="gobi" data-val="〜ですよね・〜ですよ">〜ですよね・〜ですよ</div>
+      <div class="chip" data-group="gobi" data-val="〜かな・〜と思う">〜かな・〜と思う</div>
+      <div class="chip" data-group="gobi" data-val="〜なんだよな・〜なぁ">〜なんだよな・〜なぁ</div>
+      <div class="chip" data-group="gobi" data-val="〜じゃん・〜じゃない？">〜じゃん・〜じゃない？</div>
+      <div class="chip" data-group="gobi" data-val="体言止め（名詞で終わる）">体言止め</div>
+    </div>
+  </div>
+
+  <!-- 文の構造 -->
+  <div class="card">
+    <div class="card-label">文章の「入り方」パターン <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-opening">
+      <div class="chip" data-group="opening" data-val="結論から入る">結論から入る</div>
+      <div class="chip" data-group="opening" data-val="エピソード・体験談から">エピソードから</div>
+      <div class="chip" data-group="opening" data-val="問いかけから入る">問いかけから</div>
+      <div class="chip" data-group="opening" data-val="つぶやき・ひとりごとから">つぶやきから</div>
+      <div class="chip" data-group="opening" data-val="背景・状況説明から">状況説明から</div>
+      <div class="chip" data-group="opening" data-val="引用・他人の言葉から">引用から</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">文章の「締め方」パターン <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-closing">
+      <div class="chip" data-group="closing" data-val="余韻を残して終わる">余韻を残す</div>
+      <div class="chip" data-group="closing" data-val="結論・まとめで閉じる">結論で閉じる</div>
+      <div class="chip" data-group="closing" data-val="問いかけ・投げかけで終わる">問いかけで終わる</div>
+      <div class="chip" data-group="closing" data-val="次のアクションを促す">行動を促す</div>
+      <div class="chip" data-group="closing" data-val="自分の感想・感情で終わる">感想で終わる</div>
+      <div class="chip" data-group="closing" data-val="唐突に終わる（あえて締めない）">あえて締めない</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">思考の展開パターン <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-flow">
+      <div class="chip" data-group="flow" data-val="具体→抽象（体験から気づきへ）">具体→抽象</div>
+      <div class="chip" data-group="flow" data-val="抽象→具体（主張から例へ）">抽象→具体</div>
+      <div class="chip" data-group="flow" data-val="結論→理由→補足">結論→理由</div>
+      <div class="chip" data-group="flow" data-val="問い→考察→答え">問い→考察→答え</div>
+      <div class="chip" data-group="flow" data-val="ストーリー型（時系列で展開）">ストーリー型</div>
+      <div class="chip" data-group="flow" data-val="対比・比較で展開">対比で展開</div>
+    </div>
+  </div>
+
+  <!-- 改行スタイル -->
+  <div class="card">
+    <div class="card-label">改行・段落のスタイル</div>
+    <div class="chip-group" id="chips-linebreak">
+      <div class="chip" data-group="linebreak" data-val="一文ごとに改行（SNS・LINE風）">一文ごとに改行</div>
+      <div class="chip" data-group="linebreak" data-val="2〜3文で一段落">2〜3文で一段落</div>
+      <div class="chip" data-group="linebreak" data-val="しっかり段落を作る（ブログ風）">しっかり段落</div>
+      <div class="chip" data-group="linebreak" data-val="詰めて書く（改行少なめ）">詰めて書く</div>
+    </div>
+  </div>
+
+  <!-- 接続 -->
+  <div class="card">
+    <div class="card-label">よく使う接続詞・つなぎ言葉 <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-connector">
+      <div class="chip" data-group="connector" data-val="で、">で、</div>
+      <div class="chip" data-group="connector" data-val="だけど">だけど</div>
+      <div class="chip" data-group="connector" data-val="ていうか">ていうか</div>
+      <div class="chip" data-group="connector" data-val="まあ">まあ</div>
+      <div class="chip" data-group="connector" data-val="なんか">なんか</div>
+      <div class="chip" data-group="connector" data-val="そういえば">そういえば</div>
+      <div class="chip" data-group="connector" data-val="ちなみに">ちなみに</div>
+      <div class="chip" data-group="connector" data-val="要は">要は</div>
+      <div class="chip" data-group="connector" data-val="つまり">つまり</div>
+      <div class="chip" data-group="connector" data-val="それで">それで</div>
+      <div class="chip" data-group="connector" data-val="しかも">しかも</div>
+      <div class="chip" data-group="connector" data-val="逆に">逆に</div>
+    </div>
+  </div>
+
+  <!-- 媒体 -->
+  <div class="card">
+    <div class="card-label">主な用途・媒体 <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-media">
+      <div class="chip" data-group="media" data-val="Instagram / SNS">Instagram / SNS</div>
+      <div class="chip" data-group="media" data-val="X・Threads">X・スレッズ</div>
+      <div class="chip" data-group="media" data-val="ブログ・note">ブログ・note</div>
+      <div class="chip" data-group="media" data-val="メルマガ">メルマガ</div>
+      <div class="chip" data-group="media" data-val="ビジネスメール">ビジネスメール</div>
+      <div class="chip" data-group="media" data-val="LINE・チャット">LINE・チャット</div>
+      <div class="chip" data-group="media" data-val="LP・セールスコピー">LP・セールス</div>
+      <div class="chip" data-group="media" data-val="企画書・プレゼン資料">企画書・資料</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(1)">← 戻る</button>
+    <button class="btn btn-primary" onclick="goStep(3)">次へ：分析する →</button>
+  </div>
+</div>
+
+<!-- ===== STEP 3: 分析＋テスト生成 ===== -->
+<div class="step-panel" id="step-3">
+  <div class="step-title"><div class="step-num">3</div>分析結果 ＋ テスト生成</div>
+  <div class="step-desc">文体分析の結果を確認し、テスト出力でAIの再現度を試してください。</div>
+
+  <div id="analysis-results"></div>
+
+  <div class="feedback-box info" id="no-sample-notice" style="display:none;">
+    <strong>サンプルなしで分析しています</strong>
+    ステップ2のスタイル設定のみで生成します。サンプルを追加すると精度が大幅に上がります。
+  </div>
+
+  <!-- テスト生成セクション -->
+  <div class="card" style="border: 1.5px solid #B8D0C0; background: #FBFEFC;">
+    <div class="card-label" style="color: var(--success);">テスト生成：AIに試し書きさせる</div>
+    <p style="font-size:12px; color:var(--text-light); margin-bottom:12px; line-height:1.7;">
+      ここまでの設定をもとに「テスト用ミニプロンプト」を作ります。<br>
+      ChatGPTやClaudeに貼り付けて、出力が自分っぽいか確認してください。
+    </p>
+
+    <div style="margin-bottom:12px;">
+      <div class="section-label">テスト用のお題（何について書かせる？）</div>
+      <div class="chip-group" id="chips-test-topic">
+        <div class="chip selected" data-group="test-topic" data-val="最近ハマっていること">最近ハマっていること</div>
+        <div class="chip" data-group="test-topic" data-val="朝のルーティン">朝のルーティン</div>
+        <div class="chip" data-group="test-topic" data-val="おすすめの本や映画">おすすめの本/映画</div>
+        <div class="chip" data-group="test-topic" data-val="仕事で大事にしていること">仕事で大事にしていること</div>
+      </div>
+      <input type="text" id="test-topic-custom" placeholder="または自由にお題を入力" style="margin-top:8px;">
+    </div>
+
+    <button class="btn btn-analyze" onclick="generateTestPrompt()">テスト用プロンプトを作成</button>
+
+    <div id="test-prompt-output" style="display:none; margin-top:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:12px; font-weight:700; color:var(--text);">テスト用プロンプト（これをAIに貼り付けてください）</span>
+        <button class="copy-btn" id="copy-test-btn" onclick="copyTestPrompt()" style="background:var(--success); border-color:var(--success); font-size:11px; padding:5px 14px;">コピー</button>
+      </div>
+      <div style="background:#1C272D; border-radius:var(--radius-sm); padding:14px; max-height:240px; overflow-y:auto;">
+        <pre id="test-prompt-text" style="font-family:'Noto Sans JP',monospace; font-size:11px; color:#C0D0D8; white-space:pre-wrap; word-break:break-word; line-height:1.8;"></pre>
+      </div>
+      <div style="margin-top:10px; font-size:11px; color:var(--text-light); line-height:1.7;">
+        ↑ これをChatGPT / Claude / Gemini に貼り付けて出力を確認 → 次のステップで「ここが違う」をフィードバックしてください。
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(2)">← スタイル設定を修正</button>
+    <button class="btn btn-primary" onclick="goStep(4)">次へ：結果を見て調整 →</button>
+  </div>
+</div>
+
+<!-- ===== STEP 4: 調整 ===== -->
+<div class="step-panel" id="step-4">
+  <div class="step-title"><div class="step-num">4</div>テスト結果を見て調整する</div>
+  <div class="step-desc">AIのテスト出力を見て「ここが自分っぽくない」と感じた部分を教えてください。その後、細かい設定を追加します。</div>
+
+  <!-- テスト結果フィードバック -->
+  <div class="card" style="border: 1.5px solid #E8C8A8; background: #FFFBF7;">
+    <div class="card-label" style="color: var(--warn);">テスト出力へのフィードバック <span class="tag tag-optional">テストした場合</span></div>
+    <p style="font-size:12px; color:var(--text-light); margin-bottom:10px; line-height:1.7;">
+      AIが出力した文章で「自分っぽくない」と感じた部分を具体的に教えてください。<br>
+      この情報は最終プロンプトに「補正ルール」として組み込まれます。
+    </p>
+    <textarea id="test-feedback" rows="4" placeholder="例：&#10;・語尾が丁寧すぎる、もっとくだけていい&#10;・「ですよね」を使いすぎ、もう少し「だよね」寄り&#10;・文が長すぎる、もっと短く切ってほしい&#10;・全体的に硬い、もっと雑談っぽく"></textarea>
+    <div style="font-size:11px; color:var(--text-light); margin-top:6px;">具体的であるほど最終プロンプトの精度が上がります</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-label">名前・ペンネーム <span class="tag tag-optional">任意</span></div>
+    <input type="text" id="myname" placeholder="例：まいこ / 省略すると一人称で表記">
+  </div>
+
+  <div class="card">
+    <div class="card-label">よく使う言葉・口癖 <span class="tag tag-optional">任意</span></div>
+    <textarea id="habits" rows="3" placeholder="例：「なんか」「要は」「マジで」「〜な感じ」「ありがたい」「ていうか」"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-label">絶対に使わない言葉・表現 <span class="tag tag-optional">任意</span></div>
+    <textarea id="avoid-custom" rows="2" placeholder="例：「承知しました」「革新的」「させていただきます」"></textarea>
+  </div>
+
+  <!-- AIアンチパターン -->
+  <div class="card">
+    <div class="card-label">嫌いな「AI臭い」表現 <span class="tag tag-multi">複数OK</span></div>
+    <div class="chip-group" id="chips-antipattern">
+      <div class="chip" data-group="antipattern" data-val="「〜させていただきます」系">させていただきます</div>
+      <div class="chip" data-group="antipattern" data-val="「いかがでしたか？」">いかがでしたか？</div>
+      <div class="chip" data-group="antipattern" data-val="「〜について解説します」">〜について解説します</div>
+      <div class="chip" data-group="antipattern" data-val="「以上をまとめると」">以上をまとめると</div>
+      <div class="chip" data-group="antipattern" data-val="「素晴らしいですね！」的お世辞">お世辞・過剰な褒め</div>
+      <div class="chip" data-group="antipattern" data-val="「一方で〜という見方もあります」的両論併記">両論併記</div>
+      <div class="chip" data-group="antipattern" data-val="過剰な箇条書き・番号付きリスト">過剰な箇条書き</div>
+      <div class="chip" data-group="antipattern" data-val="「〜かもしれません」系の断言回避">断言回避</div>
+      <div class="chip" data-group="antipattern" data-val="「ぜひ〜してみてください」系の押しつけ">ぜひ〜してみて</div>
+      <div class="chip" data-group="antipattern" data-val="「それでは、」「さて、」等の形式的つなぎ">形式的つなぎ</div>
+      <div class="chip" data-group="antipattern" data-val="同じ意味の言い換えを並べる冗長さ">言い換えの冗長</div>
+      <div class="chip" data-group="antipattern" data-val="「重要なのは」「注意が必要です」系">重要・注意系</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">キャラクター・立ち位置 <span class="tag tag-optional">任意</span></div>
+    <textarea id="persona" rows="3" placeholder="例：30代男性・フリーランスエンジニア・落ち着いてるけど冗談も言う"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-label">文章で大切にしていること <span class="tag tag-optional">任意</span></div>
+    <textarea id="values" rows="3" placeholder="例：読んだ人が考えるきっかけになるように書く、自分の失敗も正直に書く"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-label">その他のこだわり・特記事項 <span class="tag tag-optional">任意</span></div>
+    <textarea id="other" rows="3" placeholder="例：カッコの中でツッコミを入れる、急に話題が飛ぶ、最後の一文だけ短くする"></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goStep(3)">← 分析に戻る</button>
+    <button class="btn btn-primary" onclick="goStep(5)">次へ：生成 →</button>
+  </div>
+</div>
+
+<!-- ===== STEP 5: 生成 ===== -->
+<div class="step-panel" id="step-5">
+  <div class="step-title"><div class="step-num">5</div>プロンプトを生成する</div>
+  <div class="step-desc">全設定を反映したカスタムプロンプトを作成します。</div>
+
+  <div class="card">
+    <div class="card-label">生成オプション</div>
+    <div style="margin-bottom:14px;">
+      <div class="section-label">プロンプトの言語</div>
+      <div class="chip-group" id="chips-lang">
+        <div class="chip selected" data-group="lang" data-val="ja">日本語</div>
+        <div class="chip" data-group="lang" data-val="en">英語</div>
+        <div class="chip" data-group="lang" data-val="both">日英両方</div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">プロンプトの詳細度</div>
+      <div class="chip-group" id="chips-detail">
+        <div class="chip" data-group="detail" data-val="compact">コンパクト</div>
+        <div class="chip selected" data-group="detail" data-val="standard">標準</div>
+        <div class="chip" data-group="detail" data-val="detailed">詳細（精度重視）</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-generate" onclick="generatePrompt()">プロンプトを生成する</button>
+
+  <div class="btn-row" style="justify-content:flex-start;margin-top:10px;">
+    <button class="btn btn-secondary" onclick="goStep(4)">← 調整に戻る</button>
+  </div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="result-panel" id="result-panel">
+  <div class="step-title" style="margin-bottom:18px;">
+    <div class="step-num" style="background:var(--success);">✓</div>
+    プロンプトが完成しました
+  </div>
+
+  <div>
+    <div class="result-header">
+      <div>
+        <h3>あなたの文体プロンプト</h3>
+        <p>システムプロンプトに貼り付けてください</p>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">コピー</button>
+    </div>
+    <div class="result-body">
+      <pre id="output-text"></pre>
+    </div>
+  </div>
+
+  <div class="result-tips">
+    <h4>使い方</h4>
+    <div class="tip-row"><div class="tip-icon">💬</div><div><strong>ChatGPT GPTs：</strong>Instructionsにそのまま貼り付け</div></div>
+    <div class="tip-row"><div class="tip-icon">🤖</div><div><strong>Claude Project：</strong>Project instructionsにペースト</div></div>
+    <div class="tip-row"><div class="tip-icon">✨</div><div><strong>Gemini Gems：</strong>指示欄に貼り付け</div></div>
+    <div class="tip-row"><div class="tip-icon">🔧</div><div><strong>精度UP：</strong>生成後に「ここは自分っぽくない」とAIに伝えて微調整してください</div></div>
+  </div>
+
+  <button class="restart-btn" onclick="restart()">最初からやり直す</button>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ====== CONFIG ======
+const SLIDER_LABELS = {
+  formal: ['かなりカジュアル','カジュアル','自然体','丁寧','フォーマル'],
+  length: ['かなり短め','短め','ふつう','長め','かなり長め'],
+  emotion: ['淡々・冷静','落ち着いた','ふつう','感情豊か','とても熱い'],
+  expert: ['やさしい','やや平易','ふつう','やや専門的','専門的'],
+  emoji: ['使わない','たまに','適度に','よく使う','多用する'],
+};
+
+let sampleCount = 3;
+let currentStep = 1;
+let analysisData = null;
+
+// ====== SLIDER ======
+function updateSlider(name, val) {
+  document.getElementById('val-' + name).textContent = SLIDER_LABELS[name][val - 1];
+}
+
+// ====== CHIPS ======
+const singleSelectGroups = ['pronoun', 'linebreak', 'lang', 'detail', 'test-topic'];
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const g = chip.dataset.group;
+    if (singleSelectGroups.includes(g)) {
+      document.querySelectorAll(`.chip[data-group="${g}"]`).forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+    } else {
+      chip.classList.toggle('selected');
+    }
+  });
+});
+
+// ====== SAMPLES ======
+function addSampleSlot() {
+  if (sampleCount >= 10) return;
+  sampleCount++;
+  const div = document.createElement('div');
+  div.className = 'sample-slot';
+  div.id = 'sample-slot-' + sampleCount;
+  div.innerHTML = `
+    <div class="sample-slot-header">
+      <span class="sample-slot-label">サンプル ${sampleCount}</span>
+      <select class="sample-type-select" id="sample-type-${sampleCount}">
+        <option value="">用途を選択</option>
+        <option value="SNS">SNS投稿</option>
+        <option value="ブログ">ブログ・note</option>
+        <option value="メール">メール</option>
+        <option value="LINE">LINE・チャット</option>
+        <option value="仕事">仕事文書</option>
+        <option value="その他">その他</option>
+      </select>
+    </div>
+    <textarea id="sample-${sampleCount}" rows="4" placeholder="" oninput="updateCharCount()"></textarea>
+  `;
+  document.getElementById('extra-samples').appendChild(div);
+  if (sampleCount >= 10) document.getElementById('add-sample-btn').style.display = 'none';
+}
+
+function updateCharCount() {
+  let total = 0;
+  for (let i = 1; i <= sampleCount; i++) {
+    const el = document.getElementById('sample-' + i);
+    if (el) total += el.value.length;
+  }
+  const counter = document.getElementById('total-chars');
+  counter.textContent = `合計 ${total.toLocaleString()} 文字${total < 2000 ? '（2,000文字以上推奨）' : ' ✓'}`;
+  counter.className = 'char-counter' + (total >= 2000 ? ' good' : total >= 500 ? '' : ' warn');
+}
+
+// ====== STEP NAV ======
+function goStep(n) {
+  document.getElementById('step-' + currentStep)?.classList.remove('active');
+  document.getElementById('result-panel').classList.remove('active');
+
+  if (n === 3) runAnalysis();
+
+  currentStep = n;
+  if (n <= 5) document.getElementById('step-' + n).classList.add('active');
+
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot-' + i);
+    const lbl = document.getElementById('lbl-' + i);
+    const line = document.getElementById('line-' + i);
+    if (dot) dot.className = 'step-dot' + (i < n ? ' done' : i === n ? ' active' : '');
+    if (lbl) lbl.className = 'step-label' + (i === n ? ' active' : '');
+    if (line) line.className = 'step-line' + (i < n ? ' done' : '');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ====== ANALYSIS ======
+function runAnalysis() {
+  const samples = getSamples();
+  const allText = samples.map(s => s.text).join('\n');
+  const hasText = allText.length > 50;
+
+  const container = document.getElementById('analysis-results');
+  container.innerHTML = '';
+
+  if (!hasText) {
+    document.getElementById('no-sample-notice').style.display = 'block';
+    container.innerHTML = buildSettingsOnlySummary();
+    return;
+  }
+  document.getElementById('no-sample-notice').style.display = 'none';
+
+  // Analyze
+  analysisData = analyzeText(allText);
+
+  // Build display
+  let html = '';
+
+  html += '<div class="analysis-card"><h4>📊 文体分析レポート</h4>';
+
+  html += makeAnalysisRow('平均文長', analysisData.avgSentenceLen + '文字/文', Math.min(analysisData.avgSentenceLen / 60 * 100, 100));
+  html += makeAnalysisRow('語尾パターン', analysisData.topEndings.join('、') || '検出なし', 0, true);
+  html += makeAnalysisRow('感嘆符率', Math.round(analysisData.exclamationRate * 100) + '%', analysisData.exclamationRate * 100);
+  html += makeAnalysisRow('疑問符率', Math.round(analysisData.questionRate * 100) + '%', analysisData.questionRate * 100);
+  html += makeAnalysisRow('絵文字率', Math.round(analysisData.emojiRate * 100) + '%', analysisData.emojiRate * 100);
+  html += makeAnalysisRow('一人称候補', analysisData.detectedPronoun || '検出なし', 0, true);
+
+  if (analysisData.frequentWords.length > 0) {
+    html += makeAnalysisRow('頻出ワード', analysisData.frequentWords.join('、'), 0, true);
+  }
+  if (analysisData.connectors.length > 0) {
+    html += makeAnalysisRow('接続パターン', analysisData.connectors.join('、'), 0, true);
+  }
+
+  html += '<div class="analysis-note">この分析はサンプル文から自動推定したものです。ステップ2のスライダー設定や、次のステップ4で微調整できます。<br><strong>分析と設定に矛盾がある場合は、サンプルの雰囲気を優先して生成します。</strong></div>';
+  html += '</div>';
+
+  // Feedback about confidence
+  if (allText.length < 500) {
+    html += '<div class="feedback-box warn"><strong>サンプルが少なめです（' + allText.length + '文字）</strong>分析精度を上げるには2,000文字以上のサンプルを追加してください。ステップ1に戻って追加できます。</div>';
+  } else if (allText.length >= 2000) {
+    html += '<div class="feedback-box success"><strong>十分なサンプル量です（' + allText.length.toLocaleString() + '文字）</strong>文体の特徴を高い精度で分析できています。</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function makeAnalysisRow(label, value, barPercent, noBar) {
+  if (noBar) {
+    return `<div class="analysis-row"><span class="analysis-label">${label}</span><span class="analysis-value">${value}</span></div>`;
+  }
+  return `<div class="analysis-row"><span class="analysis-label">${label}</span><div class="analysis-bar-wrap"><div class="analysis-bar" style="width:${barPercent}%"></div></div><span class="analysis-value">${value}</span></div>`;
+}
+
+function buildSettingsOnlySummary() {
+  const formal = SLIDER_LABELS.formal[document.getElementById('slider-formal').value - 1];
+  const length = SLIDER_LABELS.length[document.getElementById('slider-length').value - 1];
+  const emotion = SLIDER_LABELS.emotion[document.getElementById('slider-emotion').value - 1];
+  const pronoun = getChips('pronoun')[0] || '未設定';
+  return `<div class="analysis-card"><h4>📋 設定サマリー</h4>
+    ${makeAnalysisRow('一人称', pronoun, 0, true)}
+    ${makeAnalysisRow('フォーマル度', formal, 0, true)}
+    ${makeAnalysisRow('文の長さ', length, 0, true)}
+    ${makeAnalysisRow('感情・熱量', emotion, 0, true)}
+    <div class="analysis-note">サンプルが無いため、ステップ2の設定のみで生成します。戻ってサンプルを追加すると精度が上がります。</div>
+  </div>`;
+}
+
+function analyzeText(text) {
+  // Split into sentences
+  const sentences = text.split(/[。！？\n]+/).filter(s => s.trim().length > 2);
+  const totalSentences = sentences.length || 1;
+
+  // Average sentence length
+  const avgSentenceLen = Math.round(sentences.reduce((sum, s) => sum + s.trim().length, 0) / totalSentences);
+
+  // Exclamation / question rate
+  const excCount = (text.match(/[！!]/g) || []).length;
+  const qCount = (text.match(/[？?]/g) || []).length;
+  const periodCount = (text.match(/[。]/g) || []).length || 1;
+  const totalEnds = periodCount + excCount + qCount;
+  const exclamationRate = excCount / totalEnds;
+  const questionRate = qCount / totalEnds;
+
+  // Emoji rate
+  const emojiMatch = text.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu) || [];
+  const emojiRate = emojiMatch.length / (text.length / 100);
+
+  // Detect pronouns
+  const pronounCounts = {};
+  const pronounPatterns = [
+    { re: /[僕ぼく](?:は|が|も|の|に)/g, label: '僕' },
+    { re: /俺(?:は|が|も|の|に)/g, label: '俺' },
+    { re: /私(?:は|が|も|の|に)/g, label: '私' },
+    { re: /自分(?:は|が|も|の|に)/g, label: '自分' },
+    { re: /あたし(?:は|が|も|の|に)/g, label: 'あたし' },
+    { re: /ウチ(?:は|が|も|の|に)/g, label: 'ウチ' },
+  ];
+  pronounPatterns.forEach(p => {
+    const m = text.match(p.re);
+    if (m) pronounCounts[p.label] = m.length;
+  });
+  const detectedPronoun = Object.keys(pronounCounts).sort((a, b) => pronounCounts[b] - pronounCounts[a])[0] || null;
+
+  // Sentence endings
+  const endingCounts = {};
+  const endingPatterns = [
+    { re: /です[。！？\n]/g, label: 'です' },
+    { re: /ます[。！？\n]/g, label: 'ます' },
+    { re: /だよ(?:ね|な)?[。！？\n]/g, label: 'だよ(ね)' },
+    { re: /ですよ(?:ね)?[。！？\n]/g, label: 'ですよ(ね)' },
+    { re: /(?:だな|だなぁ|なぁ)[。！？\n]/g, label: 'なぁ' },
+    { re: /(?:かな|と思う)[。！？\n]/g, label: 'かな/と思う' },
+    { re: /(?:じゃん|じゃない)[。！？\n]/g, label: 'じゃん' },
+  ];
+  endingPatterns.forEach(p => {
+    const m = text.match(p.re);
+    if (m) endingCounts[p.label] = m.length;
+  });
+  const topEndings = Object.keys(endingCounts).sort((a, b) => endingCounts[b] - endingCounts[a]).slice(0, 3);
+
+  // Frequent words
+  const wordCandidates = ['なんか', 'マジで', 'めっちゃ', 'ほんと', 'すごく', 'やっぱ', 'たぶん',
+    'ちょっと', '結構', '全然', 'むしろ', '正直', 'ぶっちゃけ', '個人的に', '基本的に',
+    'とりあえず', '普通に', '割と', 'ガチで', 'マジ', '微妙', 'いい感じ', '大事', 'シンプル'];
+  const frequentWords = wordCandidates.filter(w => {
+    const count = (text.match(new RegExp(w, 'g')) || []).length;
+    return count >= 2;
+  }).slice(0, 6);
+
+  // Connectors
+  const connectorCandidates = ['で、', 'だけど', 'ていうか', 'まあ', 'なんか', 'そういえば',
+    'ちなみに', '要は', 'つまり', 'それで', 'しかも', '逆に', 'ただ', 'あと'];
+  const connectors = connectorCandidates.filter(c => {
+    return (text.match(new RegExp(c, 'g')) || []).length >= 2;
+  }).slice(0, 5);
+
+  return { avgSentenceLen, exclamationRate, questionRate, emojiRate, detectedPronoun, topEndings, frequentWords, connectors };
+}
+
+// ====== TEST PROMPT ======
+function generateTestPrompt() {
+  const samples = getSamples();
+  const pronoun = document.getElementById('pronoun-custom').value.trim() || getChips('pronoun')[0] || '';
+  const formal = parseInt(document.getElementById('slider-formal').value);
+  const emoji = parseInt(document.getElementById('slider-emoji').value);
+  const gobi = getChips('gobi');
+  const linebreak = getChips('linebreak')[0] || '';
+  const connector = getChips('connector');
+
+  const customTopic = document.getElementById('test-topic-custom').value.trim();
+  const chipTopic = getChips('test-topic')[0] || '';
+  const topic = customTopic || chipTopic || '最近ハマっていること';
+
+  const formalLabel = SLIDER_LABELS.formal[formal - 1];
+  const emojiLabel = SLIDER_LABELS.emoji[emoji - 1];
+
+  let tp = '';
+  tp += `以下の文体ルールに従って「${topic}」というテーマで短い文章（150〜300文字程度）を書いてください。\n\n`;
+  tp += `【文体ルール】\n`;
+  if (pronoun) tp += `- 一人称：${pronoun}\n`;
+  tp += `- フォーマル度：${formalLabel}\n`;
+  tp += `- 絵文字：${emojiLabel}\n`;
+  if (gobi.length > 0) tp += `- 語尾：${gobi.join('、')}\n`;
+  if (linebreak) tp += `- 改行：${linebreak}\n`;
+  if (connector.length > 0) tp += `- つなぎ言葉：${connector.join('、')}\n`;
+
+  if (samples.length > 0) {
+    tp += `\n【参考サンプル（この雰囲気を再現）】\n`;
+    const sampleText = samples[0].text.substring(0, 400);
+    tp += `\`\`\`\n${sampleText}\n\`\`\`\n`;
+  }
+
+  tp += `\n【重要ルール】\n`;
+  tp += `- AI臭い表現（「させていただきます」「いかがでしたか」等）は絶対使わない\n`;
+  tp += `- 箇条書きにしない。普通の文章として書く\n`;
+  tp += `- まとめや結論を無理に入れない\n`;
+  tp += `- サンプルがある場合、そのリズム・語尾・間の取り方を忠実に真似る\n`;
+
+  document.getElementById('test-prompt-text').textContent = tp;
+  document.getElementById('test-prompt-output').style.display = 'block';
+}
+
+function copyTestPrompt() {
+  const text = document.getElementById('test-prompt-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-test-btn');
+    btn.textContent = 'コピーしました ✓';
+    setTimeout(() => { btn.textContent = 'コピー'; }, 2000);
+  });
+}
+
+// ====== GET VALUES ======
+function getSamples() {
+  const results = [];
+  for (let i = 1; i <= sampleCount; i++) {
+    const textEl = document.getElementById('sample-' + i);
+    const typeEl = document.getElementById('sample-type-' + i);
+    if (textEl && textEl.value.trim()) {
+      results.push({ text: textEl.value.trim(), type: typeEl ? typeEl.value : '' });
+    }
+  }
+  return results;
+}
+
+function getChips(group) {
+  return Array.from(document.querySelectorAll(`.chip[data-group="${group}"].selected`)).map(c => c.dataset.val);
+}
+
+// ====== GENERATE ======
+function generatePrompt() {
+  const data = collectAllData();
+  const lang = getChips('lang')[0] || 'ja';
+  const detail = getChips('detail')[0] || 'standard';
+
+  let prompt = '';
+  if (lang === 'ja' || lang === 'both') prompt += buildJaPrompt(data, detail);
+  if (lang === 'both') prompt += '\n\n' + '='.repeat(60) + '\n\n';
+  if (lang === 'en' || lang === 'both') prompt += buildEnPrompt(data, detail);
+
+  // Show result
+  document.getElementById('step-5').classList.remove('active');
+  document.getElementById('result-panel').classList.add('active');
+  document.getElementById('output-text').textContent = prompt;
+
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot-' + i);
+    const lbl = document.getElementById('lbl-' + i);
+    const line = document.getElementById('line-' + i);
+    if (dot) dot.className = 'step-dot done';
+    if (lbl) lbl.className = 'step-label';
+    if (line) line.className = 'step-line done';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function collectAllData() {
+  return {
+    samples: getSamples(),
+    pronoun: document.getElementById('pronoun-custom').value.trim() || getChips('pronoun')[0] || '',
+    formal: parseInt(document.getElementById('slider-formal').value),
+    length: parseInt(document.getElementById('slider-length').value),
+    emotion: parseInt(document.getElementById('slider-emotion').value),
+    expert: parseInt(document.getElementById('slider-expert').value),
+    emoji: parseInt(document.getElementById('slider-emoji').value),
+    gobi: getChips('gobi'),
+    opening: getChips('opening'),
+    closing: getChips('closing'),
+    flow: getChips('flow'),
+    linebreak: getChips('linebreak')[0] || '',
+    connector: getChips('connector'),
+    media: getChips('media'),
+    myname: document.getElementById('myname').value.trim(),
+    habits: document.getElementById('habits').value.trim(),
+    avoidCustom: document.getElementById('avoid-custom').value.trim(),
+    antipattern: getChips('antipattern'),
+    persona: document.getElementById('persona').value.trim(),
+    values: document.getElementById('values').value.trim(),
+    other: document.getElementById('other').value.trim(),
+    testFeedback: document.getElementById('test-feedback').value.trim(),
+    analysis: analysisData,
+  };
+}
+
+// ====== JA PROMPT ======
+function buildJaPrompt(d, detail) {
+  const formalDesc = ['とてもカジュアルでくだけた話し言葉','カジュアルで親しみのある言葉遣い','自然体で適度な丁寧さ','丁寧で信頼感のある言葉遣い','フォーマルで格調のある文体'][d.formal-1];
+  const lengthDesc = ['短くテンポのよいリズミカルな文','比較的短めでテンポを意識した文','バランスの取れた読みやすい文','丁寧に展開する長めの文','十分に掘り下げた詳細な文'][d.length-1];
+  const emotionDesc = ['冷静で淡々とした書き方','落ち着いた温かみのある書き方','適度に感情を込めた書き方','感情豊かに熱量を持って書く','強い感情と高い熱量で書く'][d.emotion-1];
+  const expertDesc = ['誰にでも分かるやさしい言葉','できるだけ平易な言葉','専門用語と平易さのバランス','やや専門的な語彙も使う','専門用語や業界用語を積極的に使う'][d.expert-1];
+  const emojiDesc = ['絵文字・記号は一切使わない','絵文字はごくたまに最小限で','自然な箇所で適度に絵文字を使う','絵文字を積極的に使う','絵文字や記号を多用する'][d.emoji-1];
+
+  const nameStr = d.myname || d.pronoun || '私';
+  let p = '';
+
+  p += `# 文体ガイドライン：${nameStr}として書く\n\n`;
+  p += `あなたは${nameStr}の代わりに文章を書くAIです。\n`;
+  p += `以下のガイドラインに完全に従い、${nameStr}本人が書いたとしか思えない文章を生成してください。\n`;
+  p += `ガイドラインとサンプルに矛盾がある場合は、**サンプルの雰囲気を優先**してください。\n\n`;
+
+  // 基本スタイル
+  p += `## 基本スタイル\n\n`;
+  if (d.pronoun) p += `- **一人称**: ${d.pronoun}\n`;
+  p += `- **フォーマル度**: ${formalDesc}\n`;
+  p += `- **文の長さ**: ${lengthDesc}\n`;
+  p += `- **感情・熱量**: ${emotionDesc}\n`;
+  p += `- **語彙レベル**: ${expertDesc}\n`;
+  p += `- **絵文字・記号**: ${emojiDesc}\n`;
+  if (d.gobi.length > 0) p += `- **語尾**: ${d.gobi.join('、')}\n`;
+  if (d.linebreak) p += `- **改行スタイル**: ${d.linebreak}\n`;
+
+  // 構造パターン
+  if (d.opening.length > 0 || d.closing.length > 0 || d.flow.length > 0) {
+    p += `\n## 文章の構造パターン\n\n`;
+    if (d.opening.length > 0) p += `- **書き出し**: ${d.opening.join(' / ')}\n`;
+    if (d.flow.length > 0) p += `- **展開**: ${d.flow.join(' / ')}\n`;
+    if (d.closing.length > 0) p += `- **締め方**: ${d.closing.join(' / ')}\n`;
+  }
+
+  // 接続
+  if (d.connector.length > 0) {
+    p += `\n## よく使う接続・つなぎ言葉\n\n`;
+    p += `以下を自然に使ってください：${d.connector.join('、')}\n`;
+  }
+
+  // 媒体
+  if (d.media.length > 0) {
+    p += `\n## 主な用途\n\n${d.media.map(m => `- ${m}`).join('\n')}\n`;
+  }
+
+  // キャラクター
+  if (d.persona) {
+    p += `\n## キャラクター\n\n${d.persona}\n`;
+  }
+
+  // 口癖
+  if (d.habits) {
+    p += `\n## 口癖・よく使う表現\n\n以下のフレーズを自然に織り交ぜること：\n${d.habits}\n`;
+  }
+
+  // 大事にしていること
+  if (d.values) {
+    p += `\n## 文章で大切にしていること\n\n${d.values}\n`;
+  }
+
+  // その他
+  if (d.other) {
+    p += `\n## 特有のクセ・こだわり\n\n${d.other}\n`;
+  }
+
+  // NGリスト
+  const ngItems = [];
+  if (d.avoidCustom) ngItems.push(...d.avoidCustom.split(/[、,，\n]+/).filter(s => s.trim()));
+  if (d.antipattern.length > 0) ngItems.push(...d.antipattern);
+
+  if (ngItems.length > 0) {
+    p += `\n## 絶対に使わない表現（NG集）\n\n`;
+    p += `以下の表現は${nameStr}らしくないため、絶対に使わないでください：\n\n`;
+    ngItems.forEach(item => { p += `- ${item}\n`; });
+  }
+
+  // サンプル
+  if (d.samples.length > 0) {
+    p += `\n## 文章サンプル（最重要・この雰囲気を再現せよ）\n\n`;
+    p += `以下は${nameStr}が実際に書いた文章です。語尾・リズム・間の取り方・言い回しを忠実に再現してください。\n\n`;
+    d.samples.forEach((s, i) => {
+      const typeLabel = s.type ? `（${s.type}）` : '';
+      p += `### サンプル${i + 1}${typeLabel}\n\`\`\`\n${s.text}\n\`\`\`\n\n`;
+    });
+
+    if (detail !== 'compact') {
+      p += `**サンプルから読み取るべきポイント：**\n`;
+      p += `- 句読点の打ち方とリズム\n`;
+      p += `- 文末表現のバリエーションと切り替え\n`;
+      p += `- 話題の展開の仕方と飛び方\n`;
+      p += `- 「間」の取り方（改行や「...」の使い方）\n`;
+      p += `- 抽象と具体のバランス\n\n`;
+    }
+  }
+
+  // チェックリスト
+  if (detail === 'detailed') {
+    p += `## 生成チェックリスト\n\n`;
+    p += `文章を出力する前に内部で確認すること：\n\n`;
+    p += `1. 一人称は正しいか\n`;
+    p += `2. 語尾パターンは設定通りか（一種類に偏っていないか）\n`;
+    p += `3. 口癖が自然に入っているか\n`;
+    p += `4. NG表現を使っていないか\n`;
+    p += `5. 文の長さ・改行は指定レベルに合っているか\n`;
+    p += `6. サンプルのトーンと乖離していないか\n`;
+    p += `7. 「AIが書いた感」が出ていないか\n\n`;
+  }
+
+  // テストフィードバック（補正ルール）
+  if (d.testFeedback) {
+    p += `\n## 補正ルール（テスト出力からのフィードバック）\n\n`;
+    p += `以下はテスト出力を見て本人が「自分らしくない」と指摘した点です。\n`;
+    p += `これらは最優先で守ってください：\n\n`;
+    p += `${d.testFeedback}\n`;
+  }
+
+  // 最終ルール
+  p += `\n## 最終ルール\n\n`;
+  p += `- このガイドラインから逸脱しないこと\n`;
+  p += `- AI特有の「型にはまった丁寧さ」は排除すること\n`;
+  p += `- 完璧な文法より、${nameStr}らしいリズムと言い回しを優先すること\n`;
+  p += `- 同じ言葉を「言い換え」て避ける必要はない（人間は繰り返す）\n`;
+  p += `- 聞かれていないことを付け加えない（余計な補足やまとめ不要）\n`;
+
+  return p;
+}
+
+// ====== EN PROMPT ======
+function buildEnPrompt(d, detail) {
+  const formalMap = ['Very casual, conversational','Casual and friendly','Natural with moderate politeness','Polite and trustworthy','Formal and professional'];
+  const lengthMap = ['Short, punchy, rhythmic','Relatively short with good pacing','Well-balanced, readable','Thoughtfully developed, longer','Comprehensive and in-depth'];
+  const emotionMap = ['Calm, measured, reserved','Warm but understated','Moderately expressive','Emotionally rich, passionate','Highly expressive, enthusiastic'];
+  const expertMap = ['Simple everyday words','Mostly plain language','Balanced accessible/technical','Comfortable with jargon','Specialized vocabulary freely used'];
+  const emojiMap = ['No emoji or symbols at all','Very minimal, rare emoji','Moderate emoji in natural spots','Active emoji use','Heavy emoji and symbol use'];
+
+  const nameStr = d.myname || 'the author';
+  let p = '';
+
+  p += `# Writing Style Guide: Write as ${nameStr}\n\n`;
+  p += `You are an AI writing on behalf of ${nameStr}.\n`;
+  p += `Follow these guidelines strictly. When guidelines and samples conflict, **prioritize the sample tone**.\n\n`;
+
+  p += `## Core Style\n\n`;
+  if (d.pronoun) p += `- **First person**: ${d.pronoun} (Japanese)\n`;
+  p += `- **Formality**: ${formalMap[d.formal-1]}\n`;
+  p += `- **Sentence length**: ${lengthMap[d.length-1]}\n`;
+  p += `- **Emotional tone**: ${emotionMap[d.emotion-1]}\n`;
+  p += `- **Vocabulary**: ${expertMap[d.expert-1]}\n`;
+  p += `- **Emoji/symbols**: ${emojiMap[d.emoji-1]}\n`;
+  if (d.gobi.length > 0) p += `- **Sentence endings**: ${d.gobi.join(', ')}\n`;
+  if (d.linebreak) p += `- **Line breaks**: ${d.linebreak}\n`;
+
+  if (d.opening.length > 0 || d.closing.length > 0 || d.flow.length > 0) {
+    p += `\n## Structure Patterns\n\n`;
+    if (d.opening.length > 0) p += `- **Opening style**: ${d.opening.join(' / ')}\n`;
+    if (d.flow.length > 0) p += `- **Development**: ${d.flow.join(' / ')}\n`;
+    if (d.closing.length > 0) p += `- **Closing style**: ${d.closing.join(' / ')}\n`;
+  }
+
+  if (d.connector.length > 0) {
+    p += `\n## Connector Words\n\nUse naturally: ${d.connector.join(', ')}\n`;
+  }
+
+  if (d.media.length > 0) {
+    p += `\n## Primary Use Cases\n\n${d.media.map(m => `- ${m}`).join('\n')}\n`;
+  }
+  if (d.persona) p += `\n## Persona\n\n${d.persona}\n`;
+  if (d.habits) p += `\n## Signature Phrases\n\nWeave in naturally: ${d.habits}\n`;
+  if (d.values) p += `\n## Core Writing Values\n\n${d.values}\n`;
+  if (d.other) p += `\n## Style Quirks\n\n${d.other}\n`;
+
+  const ngItems = [];
+  if (d.avoidCustom) ngItems.push(...d.avoidCustom.split(/[、,，\n]+/).filter(s => s.trim()));
+  if (d.antipattern.length > 0) ngItems.push(...d.antipattern);
+  if (ngItems.length > 0) {
+    p += `\n## NEVER Use These (Banned Expressions)\n\n`;
+    ngItems.forEach(item => { p += `- ${item}\n`; });
+  }
+
+  if (d.samples.length > 0) {
+    p += `\n## Writing Samples (HIGHEST PRIORITY - replicate this feel)\n\n`;
+    d.samples.forEach((s, i) => {
+      const typeLabel = s.type ? ` (${s.type})` : '';
+      p += `### Sample ${i + 1}${typeLabel}\n\`\`\`\n${s.text}\n\`\`\`\n\n`;
+    });
+  }
+
+  if (d.testFeedback) {
+    p += `\n## Correction Rules (Feedback from Test Output)\n\n`;
+    p += `The author reviewed a test output and flagged these issues as "not sounding like me."\n`;
+    p += `These take HIGHEST PRIORITY:\n\n`;
+    p += `${d.testFeedback}\n`;
+  }
+
+  p += `\n## Final Rules\n\n`;
+  p += `- Never break character or sound like generic AI\n`;
+  p += `- Prioritize natural rhythm over perfect grammar\n`;
+  p += `- Don't avoid repeating words (humans repeat naturally)\n`;
+  p += `- Don't add unsolicited summaries or extra advice\n`;
+  p += `- Match the sample's energy, not a sanitized version of it\n`;
+
+  return p;
+}
+
+// ====== COPY ======
+function copyPrompt() {
+  const text = document.getElementById('output-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2500);
+  });
+}
+
+// ====== RESTART ======
+function restart() {
+  document.getElementById('result-panel').classList.remove('active');
+  currentStep = 1;
+  document.getElementById('step-1').classList.add('active');
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot-' + i);
+    const lbl = document.getElementById('lbl-' + i);
+    const line = document.getElementById('line-' + i);
+    if (dot) dot.className = 'step-dot' + (i === 1 ? ' active' : '');
+    if (lbl) lbl.className = 'step-label' + (i === 1 ? ' active' : '');
+    if (line) line.className = 'step-line';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
