@@ -270,33 +270,106 @@ body {
 
 /* メルマガ登録CTA */
 .mail-cta {
-  background: var(--card-bg);
+  background: linear-gradient(160deg, #2E3D45 0%, #3D5260 100%);
   border-radius: var(--radius);
-  padding: 28px 24px;
-  box-shadow: var(--shadow);
+  padding: 32px 24px 28px;
+  box-shadow: 0 8px 32px rgba(46, 61, 69, 0.25);
   margin-top: 20px;
   text-align: center;
-  border: 2px solid var(--accent-light);
+  position: relative;
+  overflow: hidden;
+}
+.mail-cta::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(212,165,116,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* 悩みセクション */
+.cta-pain {
+  background: rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px 16px 12px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.cta-pain-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.cta-pain-item {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.6;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.cta-pain-item:last-child { border-bottom: none; }
+
+/* コンテンツプレビュー */
+.cta-preview {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(212,165,116,0.4);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.cta-preview-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+.cta-preview-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.cta-preview-list {
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.cta-preview-list li {
+  font-size: 12px;
+  color: rgba(255,255,255,0.80);
+  padding: 4px 0;
+  line-height: 1.6;
 }
 
 .mail-cta h3 {
   font-family: 'Zen Maru Gothic', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 8px;
+  color: white;
+  margin-bottom: 6px;
+  line-height: 1.7;
 }
 
-.mail-cta p {
-  font-size: 13px;
-  color: var(--text-light);
+.mail-cta > p {
+  font-size: 12px;
+  color: rgba(255,255,255,0.60);
   margin-bottom: 20px;
   line-height: 1.7;
 }
 
 .mail-cta-btn {
   display: inline-block;
-  padding: 14px 36px;
+  padding: 15px 36px;
   background: linear-gradient(135deg, var(--accent) 0%, #C4956A 100%);
   color: white;
   font-family: 'Zen Maru Gothic', sans-serif;
@@ -304,13 +377,21 @@ body {
   font-weight: 700;
   border-radius: 12px;
   text-decoration: none;
-  box-shadow: 0 4px 16px rgba(212, 165, 116, 0.35);
+  box-shadow: 0 4px 20px rgba(212, 165, 116, 0.5);
   transition: all 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.mail-cta-btn:hover {
+  box-shadow: 0 6px 28px rgba(212, 165, 116, 0.65);
+  transform: translateY(-2px);
 }
 
-.mail-cta-btn:hover {
-  box-shadow: 0 6px 24px rgba(212, 165, 116, 0.5);
-  transform: translateY(-2px);
+.cta-note {
+  font-size: 11px;
+  color: rgba(255,255,255,0.40);
+  margin-top: 10px !important;
+  margin-bottom: 0 !important;
 }
 
 /* NEW バッジ */
@@ -399,9 +480,25 @@ body {
 
   <!-- メルマガ登録CTA -->
   <div class="mail-cta">
-    <h3>✉️ メルマガに登録して<br>「AI時代の自分らしい発信の仕方」を受け取る</h3>
-    <p>メルマガ登録者限定でお届けします</p>
+    <div class="cta-pain">
+      <p class="cta-pain-label">── こんなお悩みはありませんか？ ──</p>
+      <p class="cta-pain-item">😔 AIで書いた文章、なんか「自分っぽくない」と感じる</p>
+      <p class="cta-pain-item">💭 発信が続かない・何を書けばいいかわからない</p>
+      <p class="cta-pain-item">😟 AIに頼るほど、自分らしさが消えていく気がする</p>
+    </div>
+    <div class="cta-preview">
+      <span class="cta-preview-badge">📩 メルマガ登録者限定</span>
+      <div class="cta-preview-title">AI時代の自分らしい発信の仕方</div>
+      <ul class="cta-preview-list">
+        <li>✅ AIを「道具」として使いながら自分の言葉を守る方法</li>
+        <li>✅ 発信が続く人がやっている、たった1つの習慣</li>
+        <li>✅ 「AIっぽい」と言われない文章の作り方</li>
+      </ul>
+    </div>
+    <h3>✉️ メルマガに登録して<br>無料で受け取る</h3>
+    <p>登録後すぐにお届けします</p>
     <a href="#" id="mailCtaLink" class="mail-cta-btn">メルマガに登録する（無料）</a>
+    <p class="cta-note">登録は30秒・いつでも解除できます</p>
   </div>
 
 </div>
