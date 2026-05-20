@@ -519,6 +519,12 @@ function renderTokuten() {
 const mailCtaLink = document.getElementById('mailCtaLink');
 if (mailCtaLink) mailCtaLink.href = MAIL_CTA_URL;
 
+// メルマガ登録済みの場合はCTAを非表示
+if (new URLSearchParams(window.location.search).get('unlocked') === 'true') {
+  const mailCta = document.querySelector('.mail-cta');
+  if (mailCta) mailCta.style.display = 'none';
+}
+
 renderTokuten();
 </script>
 
