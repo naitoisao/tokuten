@@ -432,9 +432,13 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
   border-radius: var(--radius);
   padding: 18px 20px;
 }
-.result-tips h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+.result-tips h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.result-tips h5 { font-size: 11px; font-weight: 700; color: var(--accent); margin: 14px 0 8px; letter-spacing: 0.04em; }
 .tip-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px; font-size: 12px; color: var(--text-light); line-height: 1.6; }
 .tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.tip-step { font-size: 11px; color: var(--text-light); line-height: 1.8; margin: 0 0 4px 24px; padding-left: 0; }
+.tip-step li { margin-bottom: 2px; }
+.tip-divider { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
 .restart-btn {
   display: block; width: 100%; margin-top: 20px; padding: 13px;
   background: var(--bg); border: 1.5px solid var(--border); border-radius: 40px;
@@ -976,11 +980,54 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
   </div>
 
   <div class="result-tips">
-    <h4>使い方</h4>
-    <div class="tip-row"><div class="tip-icon">💬</div><div><strong>ChatGPT GPTs：</strong>Instructionsにそのまま貼り付け</div></div>
-    <div class="tip-row"><div class="tip-icon">🤖</div><div><strong>Claude Project：</strong>Project instructionsにペースト</div></div>
-    <div class="tip-row"><div class="tip-icon">✨</div><div><strong>Gemini Gems：</strong>指示欄に貼り付け</div></div>
-    <div class="tip-row"><div class="tip-icon">🔧</div><div><strong>精度UP：</strong>生成後に「ここは自分っぽくない」とAIに伝えて微調整してください</div></div>
+    <h4>📋 このプロンプトの使い方</h4>
+
+    <h5>▶ まず試すなら（毎回コピペ）</h5>
+    <div class="tip-row"><div class="tip-icon">💬</div><div>
+      <strong>ChatGPT・Claude・Gemini 共通：</strong><br>
+      チャット画面を開く → プロンプトをそのまま貼り付け → 続けて「〇〇を書いてください」と送信。無料プランでOKです。
+    </div></div>
+
+    <hr class="tip-divider">
+    <h5>▶ 一度設定すれば毎回コピペ不要（すべて無料）</h5>
+
+    <div class="tip-row"><div class="tip-icon">🤖</div><div>
+      <strong>Claude（無料）→ プロジェクト機能</strong><br>
+      <ol class="tip-step">
+        <li>claude.ai を開く</li>
+        <li>左メニューの「プロジェクト」→「プロジェクトを作成」</li>
+        <li>「プロジェクトの指示」欄にプロンプトを貼り付けて保存</li>
+        <li>このプロジェクト内でチャットすると自動で反映されます</li>
+      </ol>
+    </div></div>
+
+    <div class="tip-row"><div class="tip-icon">✨</div><div>
+      <strong>Gemini（無料）→ Gems機能</strong><br>
+      <ol class="tip-step">
+        <li>gemini.google.com を開く</li>
+        <li>左メニュー「Gems」→「新しいGemを作成」</li>
+        <li>「指示」欄にプロンプトを貼り付けて保存</li>
+        <li>次回からこのGemを選ぶだけでOK</li>
+      </ol>
+    </div></div>
+
+    <hr class="tip-divider">
+    <h5>▶ 有料プランの場合</h5>
+
+    <div class="tip-row"><div class="tip-icon">💬</div><div>
+      <strong>ChatGPT Plus → GPTs</strong><br>
+      <ol class="tip-step">
+        <li>chatgpt.com を開く</li>
+        <li>「GPTを探す」→「GPTを作成」</li>
+        <li>「Instructions」欄にプロンプトを貼り付けて保存</li>
+        <li>※GPT作成はPlusプラン（有料）のみ</li>
+      </ol>
+    </div></div>
+
+    <hr class="tip-divider">
+    <div class="tip-row"><div class="tip-icon">🔧</div><div>
+      <strong>精度UP：</strong>出力が「自分っぽくない」と感じたら「もっと〇〇な感じで」「この表現は使わない」と追加で伝えると精度が上がります
+    </div></div>
   </div>
 
   <button class="restart-btn" onclick="restart()">最初からやり直す</button>
