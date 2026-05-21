@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>自分らしい文章プロンプト ジェネレーター</title>
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <style>
 :root {
   --bg: #F7F4F0;
@@ -700,7 +701,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
   <!-- 語尾 -->
   <div class="card">
-    <div class="card-label">語尾スタイル <span class="tag tag-multi">複数OK</span></div>
+    <div class="card-label">語尾スタ��ル <span class="tag tag-multi">複数OK</span></div>
     <div class="chip-group" id="chips-gobi">
       <div class="chip" data-group="gobi" data-val="です・ます">です・ます</div>
       <div class="chip" data-group="gobi" data-val="だ・である">だ・である</div>
@@ -1437,7 +1438,7 @@ function buildJaPrompt(d, detail) {
 
   // 媒体
   if (d.media.length > 0) {
-    p += `\n## 主な用途\n\n${d.media.map(m => `- ${m}`).join('\n')}\n`;
+    p += `\n## ��な用途\n\n${d.media.map(m => `- ${m}`).join('\n')}\n`;
   }
 
   // キャラクター
@@ -1517,7 +1518,7 @@ function buildJaPrompt(d, detail) {
   p += `- AI特有の「型にはまった丁寧さ」は排除すること\n`;
   p += `- 完璧な文法より、${nameStr}らしいリズムと言い回しを優先すること\n`;
   p += `- 同じ言葉を「言い換え」て避ける必要はない（人間は繰り返す）\n`;
-  p += `- 聞かれていないことを付け加えない（余計な補足やまとめ不要）\n`;
+  p += `- 聞かれて���ないことを付け加えない（余計な補足やまとめ不要）\n`;
 
   return p;
 }
