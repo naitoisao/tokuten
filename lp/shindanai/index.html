@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人ビジネスのニーズ診断AI｜売れる可能性を無料チェック</title>
+<meta name="description" content="個人起業家・スモールビジネス向けに、ニーズがあるか、集客できそうか、売れる可能性があるかを無料で診断します。">
+<meta property="og:title" content="個人ビジネスのニーズ診断AI">
+<meta property="og:description" content="あなたのビジネスにニーズがあるか、集客できそうか、売れる可能性があるかを無料でチェック。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tokuten.vercel.app/lp/shindanai/">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4F0;
+  --panel: #FFFFFF;
+  --ink: #342F2B;
+  --muted: #756B63;
+  --green: #385A55;
+  --green-soft: #DDECE6;
+  --terracotta: #C87941;
+  --terracotta-soft: #F1DAC8;
+  --blue-soft: #E6EEF7;
+  --rose-soft: #F4E2DF;
+  --border: #E2D8CE;
+  --shadow: 0 12px 36px rgba(48, 68, 64, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+a { color: inherit; }
+
+.hero {
+  min-height: 92vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+  background: #263B38;
+}
+
+.hero-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  transform: scale(1.08);
+  transform-origin: center top;
+  filter: saturate(0.82) brightness(0.45);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(38, 59, 56, 0.42);
+}
+
+.hero-inner {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 70px 0 86px;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,0.34);
+  background: rgba(255,255,255,0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(32px, 8vw, 64px);
+  line-height: 1.22;
+  letter-spacing: 0;
+  max-width: 780px;
+  margin-bottom: 18px;
+}
+
+.hero-copy {
+  font-size: clamp(15px, 2.5vw, 19px);
+  color: rgba(255,255,255,0.88);
+  max-width: 660px;
+  margin-bottom: 28px;
+}
+
+.hero-actions,
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-primary {
+  background: var(--terracotta);
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(200, 121, 65, 0.35);
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-color: rgba(255,255,255,0.34);
+}
+
+.btn-light {
+  background: var(--green);
+  color: #fff;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(48, 68, 64, 0.16);
+}
+
+.hero-note {
+  margin-top: 18px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.72);
+}
+
+.section {
+  padding: 58px 16px;
+}
+
+.section.alt { background: #fff; }
+
+.inner {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.section-head {
+  margin-bottom: 24px;
+}
+
+.section-kicker {
+  color: var(--terracotta);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+h2 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(23px, 4vw, 34px);
+  line-height: 1.45;
+  color: var(--green);
+  letter-spacing: 0;
+}
+
+.section-lead {
+  margin-top: 8px;
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.problem-grid,
+.feature-grid,
+.voice-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.problem,
+.feature,
+.voice {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 4px 18px rgba(48, 68, 64, 0.06);
+}
+
+.problem:nth-child(2) { background: var(--green-soft); }
+.problem:nth-child(3) { background: var(--rose-soft); }
+
+.icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--terracotta-soft);
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+
+.card-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+.card-text {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  counter-reset: flow;
+}
+
+.flow-step {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  position: relative;
+}
+
+.flow-step::before {
+  counter-increment: flow;
+  content: counter(flow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.sample {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.sample-panel {
+  background: #263B38;
+  color: #F8F5F1;
+  border-radius: 8px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 132px 1fr 42px;
+  gap: 9px;
+  align-items: center;
+  color: rgba(255,255,255,0.78);
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  width: var(--w);
+  background: var(--terracotta);
+  border-radius: 999px;
+}
+
+.sample-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.sample-text {
+  color: rgba(255,255,255,0.78);
+  font-size: 13px;
+}
+
+.cta {
+  background: var(--green);
+  color: #fff;
+  padding: 58px 16px;
+}
+
+.cta .inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.cta h2 { color: #fff; }
+.cta p {
+  color: rgba(255,255,255,0.78);
+  max-width: 680px;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.footer {
+  padding: 26px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.footer a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+@media (max-width: 780px) {
+  .hero { min-height: 88vh; }
+  .hero-inner { padding-top: 54px; }
+  .problem-grid,
+  .feature-grid,
+  .voice-grid,
+  .flow,
+  .sample,
+  .cta .inner {
+    grid-template-columns: 1fr;
+  }
+  .hero-actions,
+  .section-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .btn { width: 100%; }
+  .score-row { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <iframe class="hero-preview" src="../../needs-diagnosis.html" title="" aria-hidden="true" tabindex="-1"></iframe>
+  <div class="hero-shade"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">無料診断ツール</div>
+    <h1>そのビジネス、<br>ニーズがありますか？</h1>
+    <p class="hero-copy">個人起業家・スモールビジネス向けに、集客できそうか、売れる可能性があるか、どこを改善すればよいかをやさしく診断します。</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="../../needs-diagnosis.html">無料で診断する</a>
+      <a class="btn btn-secondary" href="#details">診断でわかること</a>
+    </div>
+    <p class="hero-note">選択式だから、初めての方でも答えやすい。補足を書くとさらに精度が上がります。</p>
+  </div>
+</header>
+
+<main>
+  <section class="section alt" id="details">
+    <div class="inner">
+      <div class="section-head">
+        <div class="section-kicker">FOR SMALL BUSINESS</div>
+        <h2>こんなモヤモヤを整理できます</h2>
+      </div>
+      <div class="problem-grid">
+        <div class="problem">
+          <div class="icon">?</div>
+          <div class="card-title">ニーズがあるか不安</div>
+          <p class="card-text">「これって本当に求められている？」という段階でも、客観的な視点で確認できます。</p>
+        </div>
+        <div class="problem">
+          <div class="icon">↗</div>
+          <div class="card-title">集客の切り口が曖昧</div>
+          <p class="card-text">誰に、どんな言葉で届けると反応が出やすいかを整理します。</p>
+        </div>
+        <div class="problem">
+          <div class="icon">¥</div>
+          <div class="card-title">売れる形にできるか迷う</div>
+          <p class="card-text">商品内容、価格、導線、あなたから買う理由を見ながら改善ポイントを出します。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="inner">
+      <div class="section-head">
+        <div class="section-kicker">HOW IT WORKS</div>
+        <h2>8つの質問に答えるだけ</h2>
+        <p class="section-lead">選択肢を選ぶだけでも診断できます。必要に応じて短い補足を書くと、より具体的な結果になります。</p>
+      </div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="card-title">お客様像を整理</div>
+          <p class="card-text">誰に届けたいのか、悩みや生活状況を確認します。</p>
+        </div>
+        <div class="flow-step">
+          <div class="card-title">商品内容を確認</div>
+          <p class="card-text">サービス内容、価格、提供方法の仮説を見ます。</p>
+        </div>
+        <div class="flow-step">
+          <div class="card-title">買う理由を判定</div>
+          <p class="card-text">あなたから買う理由や強みが伝わるかをチェックします。</p>
+        </div>
+        <div class="flow-step">
+          <div class="card-title">改善案を出力</div>
+          <p class="card-text">診断点、理由、改善アドバイス、発信切り口をまとめます。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="inner sample">
+      <div>
+        <div class="section-kicker">OUTPUT</div>
+        <h2>診断後にわかること</h2>
+        <p class="section-lead">応援だけではなく、ニーズ・具体性・買う理由・価格魅力・導線をもとに、少し厳しめにチェックします。</p>
+        <div class="section-actions" style="margin-top:18px;">
+          <a class="btn btn-light" href="../../needs-diagnosis.html">診断を始める</a>
+        </div>
+      </div>
+      <div class="sample-panel">
+        <div class="sample-title">診断結果サンプル</div>
+        <div class="score-row"><span>ニーズ</span><div class="bar"><span style="--w:72%"></span></div><span>3.6</span></div>
+        <div class="score-row"><span>具体性</span><div class="bar"><span style="--w:64%"></span></div><span>3.2</span></div>
+        <div class="score-row"><span>買う理由</span><div class="bar"><span style="--w:58%"></span></div><span>2.9</span></div>
+        <div class="score-row"><span>集客導線</span><div class="bar"><span style="--w:70%"></span></div><span>3.5</span></div>
+        <p class="sample-text">改善アドバイス、売れる切り口、SNSプロフィール用の説明文まで出力します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="inner">
+      <div class="section-head">
+        <div class="section-kicker">RECOMMENDED</div>
+        <h2>こんな方におすすめです</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature">
+          <div class="card-title">これからビジネスを始めたい方</div>
+          <p class="card-text">アイデア段階でも、最初にどこを具体化すればよいかがわかります。</p>
+        </div>
+        <div class="feature">
+          <div class="card-title">新しいサービスを考えている方</div>
+          <p class="card-text">売りたい内容がお客様の悩みとつながっているか確認できます。</p>
+        </div>
+        <div class="feature">
+          <div class="card-title">発信や集客が苦手な方</div>
+          <p class="card-text">SNSやLINEで伝える切り口を考える材料になります。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="inner">
+      <div>
+        <h2>まずは今のアイデアを診断してみませんか？</h2>
+        <p>完璧に整理できていなくても大丈夫です。近い選択肢を選ぶだけで、今のビジネスの可能性と改善ポイントが見えてきます。</p>
+      </div>
+      <a class="btn btn-primary" href="../../needs-diagnosis.html">無料で診断する</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  Powered by <a href="https://simpleworks.jp">simpleworks.jp</a>
+</footer>
+</body>
+</html>
