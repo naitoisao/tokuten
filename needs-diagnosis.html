@@ -614,14 +614,14 @@ h1 {
       <button class="btn btn-quiet" type="button" id="restartBtn">もう一度診断する</button>
     </div>
     <p class="notice">この診断は、入力内容をもとにした簡易診断です。実際の販売可否は、テスト販売やお客様の反応と合わせて判断してください。</p>
-    <section class="share-box" aria-label="診断ツールを紹介する">
-      <div class="share-title">診断ツールを紹介する</div>
-      <p>この診断ツールを紹介するときは、診断ツール用のThreads投稿をシェアしてもらう導線にしています。</p>
+    <section class="share-box" aria-label="診断ツールをシェアする">
+      <div class="share-title">「役に立った」と思ったら、まわりにもシェアしてみてください</div>
+      <p>同じように悩んでいる友人や知り合いに、この診断を紹介してもらえると嬉しいです。Threads投稿をリポストするだけでOKです。</p>
       <div class="share-actions">
-        <a class="share-link" id="shareThreadsLink" href="#" target="_blank" rel="noopener">Threads投稿を見る</a>
-        <button class="share-button" type="button" id="copyShareBtn">診断LPをコピー</button>
+        <a class="share-link" id="shareThreadsLink" href="#" target="_blank" rel="noopener">Threads投稿をシェアする</a>
+        <button class="share-button" type="button" id="copyShareBtn">診断ページのURLをコピー</button>
       </div>
-      <div class="share-small" id="shareStatusText">診断ツール用のThreads投稿URLを設定すると、上のボタンから投稿へ移動できます。</div>
+      <div class="share-small" id="shareStatusText">投稿をリポスト・引用していただくと、診断ツールが届きやすくなります。</div>
     </section>
   </section>
 </main>
@@ -629,7 +629,7 @@ h1 {
 <script>
 const SHARE_URL = 'https://tokuten.vercel.app/lp/shindanai/';
 // 診断ツール紹介用のThreads投稿URL。投稿後にここへURLを入れると、診断ツール内のシェア導線が投稿へ向きます。
-const DIAGNOSIS_THREADS_URL = '';
+const DIAGNOSIS_THREADS_URL = 'https://www.threads.com/@naitoisao/post/DYn3TY9k6_k?xmt=AQG09Ceda81D6QXbv7GnE5vhOj4bjxBaZB86d5YMH1IKOg';
 
 const questions = [
   {
