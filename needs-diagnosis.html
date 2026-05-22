@@ -471,6 +471,63 @@ h1 {
   margin-top: 12px;
 }
 
+.share-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin: 18px 0;
+}
+
+.share-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  color: var(--primary-deep);
+  margin-bottom: 5px;
+}
+
+.share-box p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.share-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.share-link,
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #FBF8F5;
+  color: var(--primary-deep);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.share-link:hover,
+.share-button:hover {
+  border-color: var(--accent);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.share-button {
+  appearance: none;
+}
+
 .notice {
   color: var(--muted);
   font-size: 12px;
@@ -482,10 +539,12 @@ h1 {
   .main { padding-inline: 14px; }
   .question-panel,
   .intro,
+  .share-box,
   .result-panel { padding: 16px; }
   .actions,
   .result-actions { flex-direction: column; }
   .btn { width: 100%; }
+  .share-actions { grid-template-columns: 1fr 1fr; }
   .score-card { grid-template-columns: 1fr; }
   .score-circle { margin: 0 auto; }
   .criteria-row { grid-template-columns: 1fr; gap: 5px; }
@@ -504,6 +563,17 @@ h1 {
   <section class="intro">
     <div class="intro-title">診断の流れ</div>
     <p>8つの質問に順番に答えると、あなたのビジネスにニーズがあるか、集客できそうか、売れる可能性があるかを診断します。近い選択肢を選ぶだけでも使えて、必要に応じて短い補足を書くと精度が上がります。</p>
+  </section>
+
+  <section class="share-box" aria-label="このツールをシェア">
+    <div class="share-title">このツールをシェア</div>
+    <p>個人ビジネスのアイデアを整理したい方へ、診断ツールのURLを共有できます。</p>
+    <div class="share-actions">
+      <button class="share-button" type="button" id="shareNativeBtn">共有</button>
+      <button class="share-button" type="button" id="copyShareBtn">URLコピー</button>
+      <a class="share-link" id="shareXLink" href="#" target="_blank" rel="noopener">X</a>
+      <a class="share-link" id="shareLineLink" href="#" target="_blank" rel="noopener">LINE</a>
+    </div>
   </section>
 
   <div class="progress" id="progress"></div>
@@ -547,6 +617,9 @@ h1 {
 </main>
 
 <script>
+const SHARE_URL = 'https://tokuten.vercel.app/needs-diagnosis.html';
+const SHARE_TEXT = '個人ビジネスのニーズ診断AIを試してみませんか？ ニーズがあるか、集客できそうか、売れる可能性があるかをチェックできます。';
+
 const questions = [
   {
     type: '基本質問 1/5',
@@ -993,15 +1066,12 @@ function restart() {
 function copyResult() {
   const text = document.getElementById('markdownOutput').textContent;
   const button = document.getElementById('copyBtn');
-  const showCopied = () => {
-    button.textContent = 'コピーしました';
-    setTimeout(() => { button.textContent = '診断結果をコピー'; }, 2000);
-  };
-  const showFailed = () => {
-    button.textContent = 'コピーできませんでした';
-    setTimeout(() => { button.textContent = '診断結果をコピー'; }, 2500);
-  };
+  copyText(text, button, '診断結果をコピー');
+}
 
+function copyText(text, button, defaultLabel) {
+  const showCopied = () => setTemporaryButtonText(button, 'コピーしました', defaultLabel, 2000);
+  const showFailed = () => setTemporaryButtonText(button, 'コピーできませんでした', defaultLabel, 2500);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showCopied).catch(showFailed);
     return;
@@ -1025,12 +1095,50 @@ function copyResult() {
   }
 }
 
+function setTemporaryButtonText(button, text, defaultLabel, delay) {
+  button.textContent = text;
+  setTimeout(() => { button.textContent = defaultLabel; }, delay);
+}
+
+function setupShareLinks() {
+  const shareXLink = document.getElementById('shareXLink');
+  const shareLineLink = document.getElementById('shareLineLink');
+  const encodedText = encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`);
+  const encodedUrl = encodeURIComponent(SHARE_URL);
+
+  shareXLink.href = `https://twitter.com/intent/tweet?text=${encodedText}`;
+  shareLineLink.href = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
+}
+
+function shareTool() {
+  const button = document.getElementById('shareNativeBtn');
+  if (navigator.share) {
+    navigator.share({
+      title: '個人ビジネスのニーズ診断AI',
+      text: SHARE_TEXT,
+      url: SHARE_URL
+    }).catch(() => {
+      copyText(`${SHARE_TEXT}\n${SHARE_URL}`, button, '共有');
+    });
+    return;
+  }
+  copyText(`${SHARE_TEXT}\n${SHARE_URL}`, button, '共有');
+}
+
+function copyShareUrl() {
+  const button = document.getElementById('copyShareBtn');
+  copyText(SHARE_URL, button, 'URLコピー');
+}
+
 backBtn.addEventListener('click', goBack);
 nextBtn.addEventListener('click', goNext);
 hintBtn.addEventListener('click', () => hintBox.classList.toggle('active'));
 document.getElementById('copyBtn').addEventListener('click', copyResult);
 document.getElementById('restartBtn').addEventListener('click', restart);
+document.getElementById('shareNativeBtn').addEventListener('click', shareTool);
+document.getElementById('copyShareBtn').addEventListener('click', copyShareUrl);
 
+setupShareLinks();
 initProgress();
 renderQuestion();
 </script>
