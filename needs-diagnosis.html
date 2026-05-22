@@ -495,7 +495,7 @@ h1 {
 
 .share-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1.4fr 1fr;
   gap: 8px;
 }
 
@@ -528,6 +528,18 @@ h1 {
   appearance: none;
 }
 
+.share-link.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: default;
+}
+
+.share-small {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
+}
+
 .notice {
   color: var(--muted);
   font-size: 12px;
@@ -544,7 +556,7 @@ h1 {
   .actions,
   .result-actions { flex-direction: column; }
   .btn { width: 100%; }
-  .share-actions { grid-template-columns: 1fr 1fr; }
+  .share-actions { grid-template-columns: 1fr; }
   .score-card { grid-template-columns: 1fr; }
   .score-circle { margin: 0 auto; }
   .criteria-row { grid-template-columns: 1fr; gap: 5px; }
@@ -565,15 +577,14 @@ h1 {
     <p>8つの質問に順番に答えると、あなたのビジネスにニーズがあるか、集客できそうか、売れる可能性があるかを診断します。近い選択肢を選ぶだけでも使えて、必要に応じて短い補足を書くと精度が上がります。</p>
   </section>
 
-  <section class="share-box" aria-label="このツールをシェア">
-    <div class="share-title">このツールをシェア</div>
-    <p>個人ビジネスのアイデアを整理したい方へ、診断ツールのURLを共有できます。</p>
+  <section class="share-box" aria-label="診断ツールを紹介する">
+    <div class="share-title">診断ツールを紹介する</div>
+    <p>この診断ツールを紹介するときは、診断ツール用のThreads投稿をシェアしてもらう導線にしています。</p>
     <div class="share-actions">
-      <a class="share-link" id="shareThreadsLink" href="#" target="_blank" rel="noopener">Threads投稿</a>
-      <button class="share-button" type="button" id="copyShareBtn">LPコピー</button>
-      <a class="share-link" id="shareXLink" href="#" target="_blank" rel="noopener">X</a>
-      <a class="share-link" id="shareLineLink" href="#" target="_blank" rel="noopener">LINE</a>
+      <a class="share-link" id="shareThreadsLink" href="#" target="_blank" rel="noopener">Threads投稿を見る</a>
+      <button class="share-button" type="button" id="copyShareBtn">診断LPをコピー</button>
     </div>
+    <div class="share-small" id="shareStatusText">診断ツール用のThreads投稿URLを設定すると、上のボタンから投稿へ移動できます。</div>
   </section>
 
   <div class="progress" id="progress"></div>
@@ -620,7 +631,6 @@ h1 {
 const SHARE_URL = 'https://tokuten.vercel.app/lp/shindanai/';
 // 診断ツール紹介用のThreads投稿URL。投稿後にここへURLを入れると、診断ツール内のシェア導線が投稿へ向きます。
 const DIAGNOSIS_THREADS_URL = '';
-const SHARE_TEXT = '個人ビジネスのニーズ診断AIを試してみませんか？ ニーズがあるか、集客できそうか、売れる可能性があるかをチェックできます。';
 
 const questions = [
   {
@@ -1104,20 +1114,23 @@ function setTemporaryButtonText(button, text, defaultLabel, delay) {
 
 function setupShareLinks() {
   const shareThreadsLink = document.getElementById('shareThreadsLink');
-  const shareXLink = document.getElementById('shareXLink');
-  const shareLineLink = document.getElementById('shareLineLink');
-  const encodedText = encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`);
-  const encodedUrl = encodeURIComponent(SHARE_URL);
+  const shareStatusText = document.getElementById('shareStatusText');
 
-  shareThreadsLink.href = DIAGNOSIS_THREADS_URL || SHARE_URL;
-  if (!DIAGNOSIS_THREADS_URL) shareThreadsLink.textContent = '診断LP';
-  shareXLink.href = `https://twitter.com/intent/tweet?text=${encodedText}`;
-  shareLineLink.href = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
+  if (DIAGNOSIS_THREADS_URL) {
+    shareThreadsLink.href = DIAGNOSIS_THREADS_URL;
+    shareThreadsLink.classList.remove('disabled');
+    shareStatusText.textContent = '投稿をリポスト・引用していただくと、診断ツールが届きやすくなります。';
+    return;
+  }
+
+  shareThreadsLink.href = '#';
+  shareThreadsLink.classList.add('disabled');
+  shareThreadsLink.textContent = 'Threads投稿 準備中';
 }
 
 function copyShareUrl() {
   const button = document.getElementById('copyShareBtn');
-  copyText(SHARE_URL, button, 'LPコピー');
+  copyText(SHARE_URL, button, '診断LPをコピー');
 }
 
 backBtn.addEventListener('click', goBack);
