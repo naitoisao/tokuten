@@ -48,23 +48,21 @@ body {
   color: var(--ink);
 }
 
-.hero-preview {
+.hero-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  border: 0;
-  transform: scale(1.05);
-  transform-origin: center top;
+  object-fit: cover;
   filter: brightness(1.02) saturate(0.82);
-  opacity: 0.34;
+  opacity: 0.42;
   pointer-events: none;
 }
 
 .hero-shade {
   position: absolute;
   inset: 0;
-  background: rgba(251, 248, 244, 0.78);
+  background: linear-gradient(90deg, rgba(251,248,244,0.93) 0%, rgba(251,248,244,0.82) 48%, rgba(251,248,244,0.42) 100%);
 }
 
 .hero-inner {
@@ -338,14 +336,14 @@ h2 {
 </head>
 <body>
 <header class="hero">
-  <iframe class="hero-preview" src="../index.html" title="" aria-hidden="true" tabindex="-1"></iframe>
+  <img class="hero-image" src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1800&q=82" alt="">
   <div class="hero-shade"></div>
   <div class="hero-inner">
     <div class="eyebrow">LINE登録者向け 無料特典集</div>
     <h1>AIを使って、<br>自分らしい発信とビジネスを整える</h1>
     <p class="hero-copy">個人起業家・スモールビジネスの方へ。診断AI、文章プロンプト、自己紹介文メーカー、PDF資料など、すぐ使える特典をまとめました。</p>
     <div class="actions">
-      <a class="btn btn-primary" href="../index.html">特典一覧を見る</a>
+      <a class="btn btn-primary" href="https://lin.ee/zEeMd0H">LINEで特典を受け取る</a>
       <a class="btn btn-secondary" href="#benefits">特典内容を見る</a>
     </div>
     <p class="hero-note">スマホでも使いやすい、シンプルな無料特典ページです。</p>
@@ -439,7 +437,7 @@ h2 {
         <h2>特典一覧ページから、すぐに使えます</h2>
         <p>LINE登録者向けの特典を、ひとつのページにまとめています。気になるものから試してみてください。</p>
       </div>
-      <a class="btn btn-primary" href="../index.html">特典一覧を見る</a>
+      <a class="btn btn-primary" href="https://lin.ee/zEeMd0H">LINEで特典を受け取る</a>
     </div>
   </section>
 </main>

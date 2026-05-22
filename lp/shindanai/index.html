@@ -50,23 +50,21 @@ a { color: inherit; }
   background: #F7EFE7;
 }
 
-.hero-preview {
+.hero-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  border: 0;
-  transform: scale(1.08);
-  transform-origin: center top;
+  object-fit: cover;
   filter: saturate(0.82) brightness(1.02);
-  opacity: 0.34;
+  opacity: 0.42;
   pointer-events: none;
 }
 
 .hero-shade {
   position: absolute;
   inset: 0;
-  background: rgba(251, 248, 244, 0.78);
+  background: linear-gradient(90deg, rgba(251,248,244,0.94) 0%, rgba(251,248,244,0.82) 50%, rgba(251,248,244,0.42) 100%);
 }
 
 .hero-inner {
@@ -381,14 +379,14 @@ h2 {
 </head>
 <body>
 <header class="hero">
-  <iframe class="hero-preview" src="../../needs-diagnosis.html" title="" aria-hidden="true" tabindex="-1"></iframe>
+  <img class="hero-image" src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=82" alt="">
   <div class="hero-shade"></div>
   <div class="hero-inner">
     <div class="eyebrow">無料診断ツール</div>
     <h1>そのビジネス、<br>ニーズがありますか？</h1>
     <p class="hero-copy">個人起業家・スモールビジネス向けに、集客できそうか、売れる可能性があるか、どこを改善すればよいかをやさしく診断します。</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="../../needs-diagnosis.html">無料で診断する</a>
+      <a class="btn btn-primary" href="https://lin.ee/zEeMd0H">LINEで診断を受け取る</a>
       <a class="btn btn-secondary" href="#details">診断でわかること</a>
     </div>
     <p class="hero-note">選択式だから、初めての方でも答えやすい。補足を書くとさらに精度が上がります。</p>
@@ -457,7 +455,7 @@ h2 {
         <h2>診断後にわかること</h2>
         <p class="section-lead">応援だけではなく、ニーズ・具体性・買う理由・価格魅力・導線をもとに、少し厳しめにチェックします。</p>
         <div class="section-actions" style="margin-top:18px;">
-          <a class="btn btn-light" href="../../needs-diagnosis.html">診断を始める</a>
+          <a class="btn btn-light" href="https://lin.ee/zEeMd0H">LINEで診断を受け取る</a>
         </div>
       </div>
       <div class="sample-panel">
@@ -500,7 +498,7 @@ h2 {
         <h2>まずは今のアイデアを診断してみませんか？</h2>
         <p>完璧に整理できていなくても大丈夫です。近い選択肢を選ぶだけで、今のビジネスの可能性と改善ポイントが見えてきます。</p>
       </div>
-      <a class="btn btn-primary" href="../../needs-diagnosis.html">無料で診断する</a>
+      <a class="btn btn-primary" href="https://lin.ee/zEeMd0H">LINEで診断を受け取る</a>
     </div>
   </section>
 </main>
