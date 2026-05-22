@@ -569,8 +569,8 @@ h1 {
     <div class="share-title">このツールをシェア</div>
     <p>個人ビジネスのアイデアを整理したい方へ、診断ツールのURLを共有できます。</p>
     <div class="share-actions">
-      <button class="share-button" type="button" id="shareNativeBtn">共有</button>
-      <button class="share-button" type="button" id="copyShareBtn">URLコピー</button>
+      <a class="share-link" id="shareThreadsLink" href="#" target="_blank" rel="noopener">Threads投稿</a>
+      <button class="share-button" type="button" id="copyShareBtn">LPコピー</button>
       <a class="share-link" id="shareXLink" href="#" target="_blank" rel="noopener">X</a>
       <a class="share-link" id="shareLineLink" href="#" target="_blank" rel="noopener">LINE</a>
     </div>
@@ -618,6 +618,8 @@ h1 {
 
 <script>
 const SHARE_URL = 'https://tokuten.vercel.app/lp/shindanai/';
+// 診断ツール紹介用のThreads投稿URL。投稿後にここへURLを入れると、診断ツール内のシェア導線が投稿へ向きます。
+const DIAGNOSIS_THREADS_URL = '';
 const SHARE_TEXT = '個人ビジネスのニーズ診断AIを試してみませんか？ ニーズがあるか、集客できそうか、売れる可能性があるかをチェックできます。';
 
 const questions = [
@@ -1101,33 +1103,21 @@ function setTemporaryButtonText(button, text, defaultLabel, delay) {
 }
 
 function setupShareLinks() {
+  const shareThreadsLink = document.getElementById('shareThreadsLink');
   const shareXLink = document.getElementById('shareXLink');
   const shareLineLink = document.getElementById('shareLineLink');
   const encodedText = encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`);
   const encodedUrl = encodeURIComponent(SHARE_URL);
 
+  shareThreadsLink.href = DIAGNOSIS_THREADS_URL || SHARE_URL;
+  if (!DIAGNOSIS_THREADS_URL) shareThreadsLink.textContent = '診断LP';
   shareXLink.href = `https://twitter.com/intent/tweet?text=${encodedText}`;
   shareLineLink.href = `https://social-plugins.line.me/lineit/share?url=${encodedUrl}`;
 }
 
-function shareTool() {
-  const button = document.getElementById('shareNativeBtn');
-  if (navigator.share) {
-    navigator.share({
-      title: '個人ビジネスのニーズ診断AI',
-      text: SHARE_TEXT,
-      url: SHARE_URL
-    }).catch(() => {
-      copyText(`${SHARE_TEXT}\n${SHARE_URL}`, button, '共有');
-    });
-    return;
-  }
-  copyText(`${SHARE_TEXT}\n${SHARE_URL}`, button, '共有');
-}
-
 function copyShareUrl() {
   const button = document.getElementById('copyShareBtn');
-  copyText(SHARE_URL, button, 'URLコピー');
+  copyText(SHARE_URL, button, 'LPコピー');
 }
 
 backBtn.addEventListener('click', goBack);
@@ -1135,7 +1125,6 @@ nextBtn.addEventListener('click', goNext);
 hintBtn.addEventListener('click', () => hintBox.classList.toggle('active'));
 document.getElementById('copyBtn').addEventListener('click', copyResult);
 document.getElementById('restartBtn').addEventListener('click', restart);
-document.getElementById('shareNativeBtn').addEventListener('click', shareTool);
 document.getElementById('copyShareBtn').addEventListener('click', copyShareUrl);
 
 setupShareLinks();

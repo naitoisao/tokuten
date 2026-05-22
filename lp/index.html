@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE登録特典まとめ｜AIツールとPDFを無料で使える特典集</title>
+<meta name="description" content="LINE登録者向けの無料特典集。個人ビジネスのニーズ診断AI、自分らしい文章プロンプトジェネレーター、自己紹介文メーカー、天命ナビLITEなどをまとめて使えます。">
+<meta property="og:title" content="LINE登録特典まとめ">
+<meta property="og:description" content="AIツール・診断・PDFをまとめて使える無料特典集。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tokuten.vercel.app/lp/">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF7F3;
+  --panel: #FFFFFF;
+  --ink: #3A3530;
+  --muted: #786D64;
+  --brown: #6E5D50;
+  --green: #3F625D;
+  --orange: #C87941;
+  --cream: #F1E5D7;
+  --mint: #DDECE6;
+  --blue: #E6EEF7;
+  --rose: #F4E2DF;
+  --border: #E6DCD2;
+  --shadow: 0 12px 34px rgba(105, 86, 72, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.8;
+}
+
+.hero {
+  min-height: 92vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: #4F4239;
+  color: #fff;
+}
+
+.hero-preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  transform: scale(1.05);
+  transform-origin: center top;
+  filter: brightness(0.45) saturate(0.85);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(62, 49, 41, 0.44);
+}
+
+.hero-inner {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 70px 0 86px;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  display: inline-flex;
+  border: 1px solid rgba(255,255,255,0.34);
+  background: rgba(255,255,255,0.13);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(32px, 8vw, 64px);
+  line-height: 1.23;
+  letter-spacing: 0;
+  max-width: 820px;
+  margin-bottom: 18px;
+}
+
+.hero-copy {
+  max-width: 680px;
+  color: rgba(255,255,255,0.88);
+  font-size: clamp(15px, 2.4vw, 19px);
+  margin-bottom: 28px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 8px;
+  padding: 12px 22px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-primary {
+  color: #fff;
+  background: var(--orange);
+  box-shadow: 0 8px 26px rgba(200, 121, 65, 0.34);
+}
+
+.btn-secondary {
+  color: #fff;
+  border-color: rgba(255,255,255,0.34);
+  background: rgba(255,255,255,0.12);
+}
+
+.btn-dark {
+  color: #fff;
+  background: var(--green);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(72, 58, 48, 0.16);
+}
+
+.hero-note {
+  margin-top: 16px;
+  color: rgba(255,255,255,0.74);
+  font-size: 12px;
+}
+
+.section {
+  padding: 58px 16px;
+}
+
+.section.alt { background: #fff; }
+
+.inner {
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.section-head {
+  margin-bottom: 24px;
+}
+
+.kicker {
+  color: var(--orange);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+h2 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(23px, 4vw, 34px);
+  line-height: 1.45;
+  color: var(--brown);
+  letter-spacing: 0;
+}
+
+.lead {
+  max-width: 740px;
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.benefit-grid,
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.benefit-card,
+.feature-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  box-shadow: 0 4px 18px rgba(105, 86, 72, 0.06);
+}
+
+.benefit-card:nth-child(2) { background: var(--mint); }
+.benefit-card:nth-child(3) { background: var(--blue); }
+.benefit-card:nth-child(4) { background: var(--rose); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  padding: 2px 9px;
+  background: rgba(200, 121, 65, 0.13);
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brown);
+  margin-bottom: 6px;
+}
+
+.card-text {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.path {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  counter-reset: step;
+}
+
+.path-step {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.path-step::before {
+  counter-increment: step;
+  content: counter(step);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.share-note {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+
+.share-note p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.cta {
+  background: var(--brown);
+  color: #fff;
+  padding: 58px 16px;
+}
+
+.cta .inner {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.cta h2 { color: #fff; }
+.cta p {
+  max-width: 680px;
+  color: rgba(255,255,255,0.78);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.footer {
+  text-align: center;
+  padding: 26px 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.footer a {
+  color: var(--brown);
+  text-decoration: none;
+}
+
+@media (max-width: 780px) {
+  .hero { min-height: 88vh; }
+  .hero-inner { padding-top: 54px; }
+  .actions,
+  .share-note,
+  .cta .inner {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .benefit-grid,
+  .feature-grid,
+  .path {
+    grid-template-columns: 1fr;
+  }
+  .btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <iframe class="hero-preview" src="../index.html" title="" aria-hidden="true" tabindex="-1"></iframe>
+  <div class="hero-shade"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">LINE登録者向け 無料特典集</div>
+    <h1>AIを使って、<br>自分らしい発信とビジネスを整える</h1>
+    <p class="hero-copy">個人起業家・スモールビジネスの方へ。診断AI、文章プロンプト、自己紹介文メーカー、PDF資料など、すぐ使える特典をまとめました。</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="../index.html">特典一覧を見る</a>
+      <a class="btn btn-secondary" href="#benefits">特典内容を見る</a>
+    </div>
+    <p class="hero-note">スマホでも使いやすい、シンプルな無料特典ページです。</p>
+  </div>
+</header>
+
+<main>
+  <section class="section alt" id="benefits">
+    <div class="inner">
+      <div class="section-head">
+        <div class="kicker">FREE BENEFITS</div>
+        <h2>使える特典をまとめて受け取れます</h2>
+        <p class="lead">AIが苦手な方でも使いやすいように、診断・文章作成・プロフィール作成・PDF資料をひとつのページにまとめています。</p>
+      </div>
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <div class="badge">AIツール</div>
+          <div class="card-title">個人ビジネスのニーズ診断AI</div>
+          <p class="card-text">ニーズがあるか、集客できそうか、売れる可能性があるかをチェックします。</p>
+        </div>
+        <div class="benefit-card">
+          <div class="badge">AIツール</div>
+          <div class="card-title">自分らしい文章プロンプトジェネレーター</div>
+          <p class="card-text">あなたの文体をAIに再現してもらうためのカスタムプロンプトを作れます。</p>
+        </div>
+        <div class="benefit-card">
+          <div class="badge">AIツール</div>
+          <div class="card-title">自己紹介文メーカー</div>
+          <p class="card-text">質問に答えるだけで、SNSやプロフィールに使える自己紹介文を作れます。</p>
+        </div>
+        <div class="benefit-card">
+          <div class="badge">診断</div>
+          <div class="card-title">天命ナビLITE</div>
+          <p class="card-text">5つの質問で、あなたの天命タイプを気軽に診断できます。</p>
+        </div>
+        <div class="benefit-card">
+          <div class="badge">PDF</div>
+          <div class="card-title">AI比較表・発信資料</div>
+          <p class="card-text">ChatGPT・Gemini・Claudeの使い分けや、発信に役立つ資料を受け取れます。</p>
+        </div>
+        <div class="benefit-card">
+          <div class="badge">追加特典</div>
+          <div class="card-title">シェア特典PDF</div>
+          <p class="card-text">投稿をシェアしてくださった方には、非売品PDFもご案内しています。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="inner">
+      <div class="section-head">
+        <div class="kicker">HOW TO USE</div>
+        <h2>まずは気になる特典から使ってください</h2>
+        <p class="lead">すべてを一気に使う必要はありません。今の悩みに近いものから試すと、AI活用や発信づくりが進めやすくなります。</p>
+      </div>
+      <div class="path">
+        <div class="path-step">
+          <div class="card-title">ビジネスの方向性を確認</div>
+          <p class="card-text">ニーズ診断AIで、今のアイデアの可能性を見ます。</p>
+        </div>
+        <div class="path-step">
+          <div class="card-title">自分らしい言葉を整える</div>
+          <p class="card-text">文章プロンプトで、AIにあなたらしい文体を覚えてもらいます。</p>
+        </div>
+        <div class="path-step">
+          <div class="card-title">プロフィールを作る</div>
+          <p class="card-text">自己紹介文メーカーで、SNSの入口を整えます。</p>
+        </div>
+        <div class="path-step">
+          <div class="card-title">発信に使う</div>
+          <p class="card-text">PDFやテンプレートを見ながら、投稿やLINE導線に活かします。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="inner share-note">
+      <div>
+        <div class="card-title">この特典集を紹介する場合</div>
+        <p>特典全体を紹介するときは、内藤のThreads投稿をシェアしていただく導線にしています。反応が1つの投稿に集まるので、拡散されやすくなります。</p>
+      </div>
+      <a class="btn btn-dark" href="https://www.threads.com/@naitoisao/post/DYljv9PDqPS?xmt=AQG001I7yHvMeeeeeRTudjOsNqKfadY23srx90VoFYjHvA" target="_blank" rel="noopener">Threads投稿を見る</a>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="inner">
+      <div>
+        <h2>特典一覧ページから、すぐに使えます</h2>
+        <p>LINE登録者向けの特典を、ひとつのページにまとめています。気になるものから試してみてください。</p>
+      </div>
+      <a class="btn btn-primary" href="../index.html">特典一覧を見る</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  Powered by <a href="https://simpleworks.jp">simpleworks.jp</a>
+</footer>
+</body>
+</html>
