@@ -471,6 +471,46 @@ h1 {
   margin-top: 12px;
 }
 
+.other-benefits {
+  background: linear-gradient(135deg, #f5f0eb 0%, #faf7f3 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 18px 0 0;
+  text-align: center;
+}
+
+.other-benefits-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--primary-deep);
+  margin-bottom: 6px;
+}
+
+.other-benefits p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.other-benefits-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 11px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.other-benefits-btn:hover { opacity: 0.88; }
+
 .share-box {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -623,6 +663,11 @@ h1 {
       </div>
       <div class="share-small" id="shareStatusText">投稿をリポスト・引用していただくと、診断ツールが届きやすくなります。</div>
     </section>
+    <div class="other-benefits">
+      <div class="other-benefits-title">他にも無料特典をご用意しています</div>
+      <p>文章プロンプトジェネレーターやAI発信サポートのPDFなど、役立つツールを無料でお使いいただけます。</p>
+      <a class="other-benefits-btn" href="https://tokuten.vercel.app/">特典一覧を見る →</a>
+    </div>
   </section>
 </main>
 
