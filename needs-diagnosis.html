@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人ビジネスのニーズ診断AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4F0;
+  --panel: #FFFFFF;
+  --primary: #506D68;
+  --primary-deep: #2F4743;
+  --accent: #C87941;
+  --accent-soft: #F2DDCC;
+  --mint: #DDEDE6;
+  --sky: #E8F0F8;
+  --rose: #F4E4E0;
+  --text: #37312D;
+  --muted: #776C64;
+  --border: #E3D9CF;
+  --danger: #B05A4F;
+  --shadow: 0 2px 22px rgba(64, 82, 78, 0.1);
+  --shadow-strong: 0 8px 30px rgba(64, 82, 78, 0.16);
+  --radius: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(145deg, #2F4743 0%, #506D68 54%, #C87941 100%);
+  color: #fff;
+  padding: 44px 18px 38px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: -45% auto auto -20%;
+  width: 70%;
+  height: 180%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255,255,255,0.82);
+  font-size: 12px;
+  text-decoration: none;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.24);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+h1 {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: clamp(23px, 6vw, 32px);
+  line-height: 1.45;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.lead {
+  color: rgba(255,255,255,0.82);
+  font-size: 13px;
+  max-width: 540px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 26px 16px 72px;
+}
+
+.intro,
+.question-panel,
+.result-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.intro {
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.intro-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  color: var(--primary-deep);
+  margin-bottom: 6px;
+}
+
+.intro p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.progress {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.progress-step {
+  height: 7px;
+  border-radius: 999px;
+  background: #E5DDD4;
+}
+
+.progress-step.active,
+.progress-step.done {
+  background: var(--accent);
+}
+
+.question-panel {
+  padding: 22px;
+}
+
+.question-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.question-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--primary-deep);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.question-type {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.question-title {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  color: var(--primary-deep);
+  font-size: 19px;
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+
+.question-help {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.choice-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-deep);
+  margin-bottom: 8px;
+}
+
+.choice-grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.choice-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: #FBF8F5;
+  color: var(--text);
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.55;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.choice-btn:hover {
+  border-color: var(--accent);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.choice-btn.selected {
+  border-color: var(--primary);
+  background: var(--mint);
+}
+
+.choice-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #B8AEA5;
+  flex-shrink: 0;
+  margin-top: 1px;
+  position: relative;
+}
+
+.choice-btn.selected .choice-mark {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.choice-btn.selected .choice-mark::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.answer-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--primary-deep);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.answer-label span {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.answer {
+  width: 100%;
+  min-height: 110px;
+  padding: 13px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: #FBF8F5;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.75;
+  resize: vertical;
+}
+
+.answer:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.hint-box {
+  display: none;
+  margin-top: 12px;
+  padding: 12px 13px;
+  border-radius: 12px;
+  background: var(--sky);
+  color: var(--primary-deep);
+  font-size: 12px;
+}
+
+.hint-box.active { display: block; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-primary {
+  flex: 1;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent) 0%, #A86232 100%);
+  box-shadow: 0 5px 18px rgba(200, 121, 65, 0.32);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 24px rgba(200, 121, 65, 0.42);
+}
+
+.btn-secondary {
+  color: var(--primary);
+  background: var(--mint);
+}
+
+.btn-quiet {
+  color: var(--muted);
+  background: #EEE7DF;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.result-panel {
+  display: none;
+  padding: 22px;
+  margin-top: 22px;
+  box-shadow: var(--shadow-strong);
+}
+
+.result-panel.active { display: block; }
+
+.score-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #FBF8F5;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.score-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--score-deg), #E9DFD6 0);
+  color: var(--primary-deep);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  position: relative;
+}
+
+.score-circle::after {
+  content: '';
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--panel);
+}
+
+.score-circle span {
+  position: relative;
+  z-index: 1;
+}
+
+.score-label {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  color: var(--primary-deep);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.stars {
+  color: var(--accent);
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  margin: 4px 0;
+}
+
+.score-note {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.criteria {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.criteria-row {
+  display: grid;
+  grid-template-columns: 132px 1fr 42px;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bar {
+  height: 8px;
+  border-radius: 999px;
+  background: #E9DFD6;
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  width: var(--bar-width);
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.markdown {
+  white-space: pre-wrap;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #2F4743;
+  color: #F8F5F1;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.75;
+  max-height: 620px;
+  overflow: auto;
+}
+
+.result-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.notice {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 560px) {
+  .header { padding-top: 34px; }
+  .main { padding-inline: 14px; }
+  .question-panel,
+  .intro,
+  .result-panel { padding: 16px; }
+  .actions,
+  .result-actions { flex-direction: column; }
+  .btn { width: 100%; }
+  .score-card { grid-template-columns: 1fr; }
+  .score-circle { margin: 0 auto; }
+  .criteria-row { grid-template-columns: 1fr; gap: 5px; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="back-link" href="https://tokuten.vercel.app/">← 特典一覧に戻る</a>
+  <div class="badge">AI TOOL</div>
+  <h1>個人ビジネスの<br>ニーズ診断AI</h1>
+  <p class="lead">ニーズがあるか、集客できそうか、売れる可能性があるかを、現実的な視点で診断します。</p>
+</header>
+
+<main class="main">
+  <section class="intro">
+    <div class="intro-title">診断の流れ</div>
+    <p>8つの質問に順番に答えると、あなたのビジネスにニーズがあるか、集客できそうか、売れる可能性があるかを診断します。近い選択肢を選ぶだけでも使えて、必要に応じて短い補足を書くと精度が上がります。</p>
+  </section>
+
+  <div class="progress" id="progress"></div>
+
+  <section class="question-panel" id="questionPanel">
+    <div class="question-kicker">
+      <span class="question-num" id="questionNum"></span>
+      <span class="question-type" id="questionType"></span>
+    </div>
+    <h2 class="question-title" id="questionTitle"></h2>
+    <p class="question-help" id="questionHelp"></p>
+    <div class="choice-title">近いものを選んでください</div>
+    <div class="choice-grid" id="choiceGrid"></div>
+    <label class="answer-label" for="answerInput">補足メモ <span>任意・短くてOK</span></label>
+    <textarea class="answer" id="answerInput"></textarea>
+    <div class="hint-box" id="hintBox"></div>
+    <div class="actions">
+      <button class="btn btn-quiet" type="button" id="backBtn">戻る</button>
+      <button class="btn btn-secondary" type="button" id="hintBtn">書き方ヒント</button>
+      <button class="btn btn-primary" type="button" id="nextBtn">次へ</button>
+    </div>
+  </section>
+
+  <section class="result-panel" id="resultPanel">
+    <div class="score-card">
+      <div class="score-circle" id="scoreCircle"><span id="scoreNumber"></span></div>
+      <div>
+        <div class="score-label" id="scoreLabel"></div>
+        <div class="stars" id="scoreStars"></div>
+        <p class="score-note" id="scoreNote"></p>
+      </div>
+    </div>
+    <div class="criteria" id="criteria"></div>
+    <div class="markdown" id="markdownOutput"></div>
+    <div class="result-actions">
+      <button class="btn btn-secondary" type="button" id="copyBtn">診断結果をコピー</button>
+      <button class="btn btn-quiet" type="button" id="restartBtn">もう一度診断する</button>
+    </div>
+    <p class="notice">この診断は、入力内容をもとにした簡易診断です。実際の販売可否は、テスト販売やお客様の反応と合わせて判断してください。</p>
+  </section>
+</main>
+
+<script>
+const questions = [
+  {
+    type: '基本質問 1/5',
+    title: '想定しているお客様',
+    help: 'できるだけ具体的に、年齢・性別・悩み・ライフスタイルなどを書いてください。',
+    placeholder: '例：育児が少し落ち着いてきた40代女性。自宅サロンを始めたいが、SNS発信や集客に苦手意識がある。平日は家事や仕事で忙しく、夜に少しだけ学ぶ時間がある。',
+    hint: '「40代女性」だけだと広すぎます。年齢、生活状況、悩みが出る場面、今困っていることまで書くと診断精度が上がります。',
+    choices: [
+      { label: '年齢・性別くらいは決まっている', value: '年齢・性別くらいは決まっている', quality: 2.1 },
+      { label: '悩みや生活状況まで少し見えている', value: '悩みや生活状況まで少し見えている', quality: 3.2 },
+      { label: '具体的な人物像・困る場面まで明確', value: '具体的な人物像・困る場面まで明確', quality: 4.2 },
+      { label: 'まだ誰に届けるか迷っている', value: 'まだ誰に届けるか迷っている', quality: 1.4 }
+    ]
+  },
+  {
+    type: '基本質問 2/5',
+    title: '売りたい商品・サービスの内容',
+    help: 'まだ明確でなくてもOKです。考えていることやアイデアを書いてください。',
+    placeholder: '例：個人起業家向けに、SNSプロフィールとLINE特典を一緒に整える90分の個別相談を提供したい。',
+    hint: '対象、提供方法、時間、価格イメージ、受けた後にどう変わるかを書ける範囲で入れてください。',
+    choices: [
+      { label: 'アイデア段階で、まだ形はぼんやりしている', value: '商品・サービスはアイデア段階', quality: 1.7 },
+      { label: '提供内容はあるが、価格や範囲は未定', value: '提供内容はあるが価格や範囲は未定', quality: 2.7 },
+      { label: '内容・提供方法・価格イメージがある', value: '内容・提供方法・価格イメージがある', quality: 3.8 },
+      { label: 'すでに販売・提供したことがある', value: 'すでに販売・提供したことがある', quality: 4.3 }
+    ]
+  },
+  {
+    type: '基本質問 3/5',
+    title: 'あなたの強み・特徴・提供できる価値',
+    help: 'なぜあなたから買う理由があるのかを書いてください。',
+    placeholder: '例：AIやITが苦手な人にも、専門用語を使わず一緒に画面を見ながら整えられる。発信文や導線づくりまで具体的にサポートできる。',
+    hint: '実績、経験、得意なサポート、他の人と違う進め方、お客様によく言われることがあると強くなります。',
+    choices: [
+      { label: '好き・得意はあるが、強みとしては未整理', value: '好き・得意はあるが強みとしては未整理', quality: 1.9 },
+      { label: '経験や資格など、伝えられる材料がある', value: '経験や資格など伝えられる材料がある', quality: 2.9 },
+      { label: '他の人との違いや選ばれる理由がある', value: '他の人との違いや選ばれる理由がある', quality: 3.8 },
+      { label: '実績やお客様の声で強みを説明できる', value: '実績やお客様の声で強みを説明できる', quality: 4.4 }
+    ]
+  },
+  {
+    type: '基本質問 4/5',
+    title: '伝えたい想いやストーリー',
+    help: 'あれば書いてください。うまく文章にしなくても大丈夫です。',
+    placeholder: '例：自分も発信やITに苦手意識があったので、同じように悩む人が自分らしくビジネスを続けられるようにしたい。',
+    hint: 'なぜこの人たちを助けたいのか、過去の経験、悔しかったこと、変えたい現実などを書いてください。',
+    choices: [
+      { label: '特にストーリーはまだない', value: '特にストーリーはまだない', quality: 2.0 },
+      { label: '想いはあるが、まだ言葉にできていない', value: '想いはあるがまだ言葉にできていない', quality: 2.7 },
+      { label: '自分の経験や背景とつながっている', value: '自分の経験や背景とつながっている', quality: 3.7 },
+      { label: 'お客様に伝わるストーリーとして話せる', value: 'お客様に伝わるストーリーとして話せる', quality: 4.2 }
+    ]
+  },
+  {
+    type: '基本質問 5/5',
+    title: '今のご自身の状況',
+    help: 'これから始めたい／活動中だが悩んでいる、など簡単に教えてください。',
+    placeholder: '例：すでにサービスはあるが、SNSからの申込みが少ない。LINE登録者は少しずつ増えているが、個別相談につながっていない。',
+    hint: '活動期間、今ある商品、集客状況、売上や申込み状況、いちばん困っていることがあると現実的に診断できます。',
+    choices: [
+      { label: 'これから始めたい', value: 'これから始めたい', quality: 1.8 },
+      { label: '活動中だが、集客や売上に悩んでいる', value: '活動中だが集客や売上に悩んでいる', quality: 3.0 },
+      { label: '商品はあるが、新しい展開を考えている', value: '商品はあるが新しい展開を考えている', quality: 3.4 },
+      { label: 'すでに反応や販売実績がある', value: 'すでに反応や販売実績がある', quality: 4.2 }
+    ]
+  },
+  {
+    type: '精度アップ質問 1/3',
+    title: 'お客様の声・根拠',
+    help: 'このニーズがありそうだと思った根拠を教えてください。',
+    placeholder: '例：友人や既存のお客様から「何から始めたらいいかわからない」とよく相談される。過去に似た相談を5件受けた。',
+    hint: '実際に聞いた言葉、相談件数、アンケート、SNSの反応、身近な人の悩みなどを書いてください。根拠が弱い場合は点数も厳しめになります。',
+    choices: [
+      { label: 'まだ推測が中心', value: 'まだ推測が中心', quality: 1.5 },
+      { label: '身近な人から似た相談を聞いた', value: '身近な人から似た相談を聞いた', quality: 2.7 },
+      { label: '複数のお客様・見込み客から声がある', value: '複数のお客様・見込み客から声がある', quality: 3.8 },
+      { label: '申込み・購入・継続など行動実績がある', value: '申込み・購入・継続など行動実績がある', quality: 4.6 }
+    ]
+  },
+  {
+    type: '精度アップ質問 2/3',
+    title: '価格・提供方法のイメージ',
+    help: 'いくらで、どんな形で提供したいかを書いてください。',
+    placeholder: '例：初回90分 15,000円。Zoomで個別相談し、後日テンプレートを渡す。継続サポートは月額33,000円も検討中。',
+    hint: '無料、単発、継続、講座、PDF、動画などの提供形態と、価格の仮説を書いてください。お金を払う魅力の評価に使います。',
+    choices: [
+      { label: '価格も提供方法もまだ未定', value: '価格も提供方法もまだ未定', quality: 1.4 },
+      { label: '無料・低価格の入口から考えている', value: '無料・低価格の入口から考えている', quality: 2.7 },
+      { label: '単発商品として価格イメージがある', value: '単発商品として価格イメージがある', quality: 3.5 },
+      { label: '継続商品や複数プランまで考えている', value: '継続商品や複数プランまで考えている', quality: 4.2 }
+    ]
+  },
+  {
+    type: '精度アップ質問 3/3',
+    title: '集客導線・発信場所',
+    help: 'どこで見込み客と出会い、どう申込みにつなげる予定ですか？',
+    placeholder: '例：ThreadsとInstagramで発信し、LINE登録に誘導。LINEで無料診断を配布して、個別相談へ案内したい。',
+    hint: 'SNS、ブログ、紹介、LINE、メルマガ、リアルのつながりなど、今ある接点とこれから作りたい導線を書いてください。',
+    choices: [
+      { label: 'まだ発信場所や導線は決まっていない', value: 'まだ発信場所や導線は決まっていない', quality: 1.3 },
+      { label: 'SNSや紹介など、出会う場所はある', value: 'SNSや紹介など出会う場所はある', quality: 2.8 },
+      { label: 'LINE・メルマガなど登録導線がある', value: 'LINE・メルマガなど登録導線がある', quality: 3.6 },
+      { label: '登録後から申込みまでの流れもある', value: '登録後から申込みまでの流れもある', quality: 4.4 }
+    ]
+  }
+];
+
+const giftText = `ご利用ありがとうございました！
+
+このツールのご感想・ご要望があれば、ぜひお聞かせください。  
+今後さらに使いやすく改善していきたいと思っています。
+
+🫶 もし「このツールいいかも！」と思っていただけましたら、  
+ぜひご紹介いただけるとうれしいです＾＾
+
+それでは、ありがとうございました！`;
+
+const answers = Array(questions.length).fill('');
+const selectedChoices = Array(questions.length).fill(null);
+let currentIndex = 0;
+
+const progress = document.getElementById('progress');
+const questionNum = document.getElementById('questionNum');
+const questionType = document.getElementById('questionType');
+const questionTitle = document.getElementById('questionTitle');
+const questionHelp = document.getElementById('questionHelp');
+const choiceGrid = document.getElementById('choiceGrid');
+const answerInput = document.getElementById('answerInput');
+const hintBox = document.getElementById('hintBox');
+const backBtn = document.getElementById('backBtn');
+const hintBtn = document.getElementById('hintBtn');
+const nextBtn = document.getElementById('nextBtn');
+const questionPanel = document.getElementById('questionPanel');
+const resultPanel = document.getElementById('resultPanel');
+
+function initProgress() {
+  progress.innerHTML = '';
+  questions.forEach((_, index) => {
+    const step = document.createElement('div');
+    step.className = 'progress-step';
+    step.dataset.index = index;
+    progress.appendChild(step);
+  });
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  questionNum.textContent = `${currentIndex + 1} / ${questions.length}`;
+  questionType.textContent = q.type;
+  questionTitle.textContent = q.title;
+  questionHelp.textContent = q.help;
+  answerInput.placeholder = q.placeholder;
+  answerInput.value = answers[currentIndex] || '';
+  renderChoices(q);
+  hintBox.textContent = q.hint;
+  hintBox.classList.remove('active');
+  backBtn.disabled = currentIndex === 0;
+  nextBtn.textContent = currentIndex === questions.length - 1 ? '診断する' : '次へ';
+
+  document.querySelectorAll('.progress-step').forEach((step, index) => {
+    step.className = 'progress-step';
+    if (index < currentIndex) step.classList.add('done');
+    if (index === currentIndex) step.classList.add('active');
+  });
+}
+
+function renderChoices(question) {
+  choiceGrid.innerHTML = '';
+  question.choices.forEach((choice, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'choice-btn';
+    if (selectedChoices[currentIndex] === index) button.classList.add('selected');
+    button.innerHTML = `<span class="choice-mark"></span><span>${choice.label}</span>`;
+    button.addEventListener('click', () => {
+      selectedChoices[currentIndex] = index;
+      renderChoices(question);
+    });
+    choiceGrid.appendChild(button);
+  });
+}
+
+function goNext() {
+  const value = answerInput.value.trim();
+  if (selectedChoices[currentIndex] === null && !value) {
+    alert('近いものを選ぶか、補足メモを入力してください。');
+    return;
+  }
+  answers[currentIndex] = value;
+  if (currentIndex < questions.length - 1) {
+    currentIndex += 1;
+    renderQuestion();
+    answerInput.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return;
+  }
+  showResult();
+}
+
+function goBack() {
+  answers[currentIndex] = answerInput.value.trim();
+  if (currentIndex === 0) return;
+  currentIndex -= 1;
+  renderQuestion();
+  answerInput.focus();
+}
+
+function countSpecificSignals(text) {
+  const age = /[0-9０-９]{2}代|[0-9０-９]{2}歳|アラ[サフォフィ]|30|40|50|60/.test(text) ? 1 : 0;
+  const lifestyle = /(育児|子育て|仕事|会社員|主婦|起業|副業|サロン|講師|在宅|時短|介護|独立|経営|フリーランス)/.test(text) ? 1 : 0;
+  const pain = /(悩|困|不安|苦手|迷|できない|わからない|集客|売上|申込|時間|お金|続かない)/.test(text) ? 1 : 0;
+  const number = /[0-9０-９]+/.test(text) ? 1 : 0;
+  const evidence = /(相談|声|反応|実績|件|人|アンケート|紹介|購入|申込み|問い合わせ)/.test(text) ? 1 : 0;
+  return age + lifestyle + pain + number + evidence;
+}
+
+function answerScore(index, text) {
+  const choiceIndex = selectedChoices[index];
+  const choice = choiceIndex === null ? null : questions[index].choices[choiceIndex];
+  const len = text.length;
+  let score = choice ? choice.quality : 1.2;
+  if (len >= 30) score += 0.5;
+  if (len >= 70) score += 0.6;
+  if (len >= 130) score += 0.4;
+  score += Math.min(countSpecificSignals(text) * 0.18, 0.9);
+
+  if (index === 0 && /(女性|男性|代|歳|ライフ|育児|仕事|悩|不安|困)/.test(text)) score += 0.35;
+  if (index === 1 && /(円|分|時間|回|講座|相談|サービス|サポート|提供|商品|セッション)/.test(text)) score += 0.35;
+  if (index === 2 && /(実績|経験|強み|得意|価値|なぜ|違|言われる|資格)/.test(text)) score += 0.35;
+  if (index === 5 && /(相談|声|反応|件|人|アンケート|購入|問い合わせ)/.test(text)) score += 0.45;
+  if (index === 6 && /(円|価格|無料|単発|継続|月額|講座|個別|Zoom|対面)/.test(text)) score += 0.35;
+  if (index === 7 && /(SNS|Instagram|Threads|LINE|メルマガ|ブログ|紹介|導線|申込|LP)/i.test(text)) score += 0.35;
+
+  return Math.max(1, Math.min(5, score));
+}
+
+function evaluate() {
+  const scores = answers.map((answer, index) => answerScore(index, answer));
+  const specificity = (scores[0] * 0.55) + (scores[5] * 0.45);
+  const offer = (scores[1] * 0.55) + (scores[6] * 0.45);
+  const reason = scores[2];
+  const desire = (scores[1] * 0.35) + (scores[3] * 0.2) + (scores[5] * 0.25) + (scores[6] * 0.2);
+  const route = (scores[4] * 0.35) + (scores[7] * 0.65);
+  const usefulness = (scores[0] * 0.3) + (scores[1] * 0.35) + (scores[4] * 0.35);
+
+  const criteria = [
+    { label: 'ニーズ', score: desire },
+    { label: '具体性', score: specificity },
+    { label: 'あなたから買う理由', score: reason },
+    { label: 'お金を払う魅力', score: offer },
+    { label: '役立ち方の明確さ', score: usefulness },
+    { label: '集客導線', score: route }
+  ];
+
+  const weighted = (desire * 0.22) + (specificity * 0.2) + (reason * 0.18) + (offer * 0.18) + (usefulness * 0.12) + (route * 0.1);
+  const strictPenalty = criteria.filter(item => item.score < 2.4).length * 0.18;
+  const total = Math.max(1, Math.min(5, weighted - strictPenalty));
+
+  return { total, criteria };
+}
+
+function labelFor(score) {
+  if (score >= 4.3) return '有望：ビジネスとして成立する可能性が高い';
+  if (score >= 3.5) return '改善すれば有望：テスト販売する価値あり';
+  if (score >= 2.7) return '要改善：ニーズの見せ方と商品設計を整えたい';
+  if (score >= 2.0) return '弱め：今のままだと集客・販売に苦戦しやすい';
+  return '再設計推奨：対象・悩み・提供価値をかなり絞りたい';
+}
+
+function starsFor(score) {
+  const rounded = Math.round(score);
+  return '★★★★★'.slice(0, rounded) + '☆☆☆☆☆'.slice(0, 5 - rounded);
+}
+
+function shortAnswer(index) {
+  const text = answers[index] || '';
+  const choiceIndex = selectedChoices[index];
+  const choiceText = choiceIndex === null ? '' : questions[index].choices[choiceIndex].value;
+  const combined = text ? `${choiceText}（補足：${text}）` : choiceText;
+  if (!combined) return '未記入';
+  return combined.length > 100 ? `${combined.slice(0, 100)}...` : combined;
+}
+
+function buildAdvice(evaluation) {
+  const lowCriteria = evaluation.criteria.filter(item => item.score < 3.0).map(item => item.label);
+  const advice = [];
+
+  if (lowCriteria.includes('具体性')) {
+    advice.push('想定顧客を「属性」ではなく「悩みが起きる場面」まで絞ってください。例：40代女性ではなく、育児が落ち着き副業を始めたいがSNS発信に苦手意識がある40代女性。');
+  }
+  if (lowCriteria.includes('あなたから買う理由')) {
+    advice.push('あなたならではの経験、実績、進め方を1つの文章にまとめてください。「なぜ他の人ではなくあなたなのか」が弱いと価格競争になりやすいです。');
+  }
+  if (lowCriteria.includes('お金を払う魅力')) {
+    advice.push('商品内容を「何をするか」ではなく「受けた後に何が変わるか」で説明してください。成果物、変化、期間、サポート範囲を見せると申込みやすくなります。');
+  }
+  if (lowCriteria.includes('集客導線')) {
+    advice.push('SNS投稿からLINE登録、無料特典、個別相談までの流れを1本にしてください。どこで出会い、どこで信頼を作り、どこで申し込むかを明確にします。');
+  }
+  if (lowCriteria.includes('ニーズ')) {
+    advice.push('身近な人や既存のお客様にヒアリングして、実際の言葉を集めてください。推測だけのニーズは売れる確率が低いため、最低5人の声を集めたいです。');
+  }
+
+  advice.push('まずは小さなテスト販売をおすすめします。高額商品をいきなり作るより、60〜90分の個別相談やミニ講座で反応を見ると現実的です。');
+  return advice.slice(0, 5);
+}
+
+function buildAngles(evaluation) {
+  const score = evaluation.total;
+  if (score >= 3.5) {
+    return [
+      '「同じ悩みを持つ人が、最初に何を整えるべきか」を伝える診断型の切り口',
+      'あなたの過去の経験や支援実績を入れたストーリー型の切り口',
+      '無料特典やミニ相談から本商品へつなげるステップ型の切り口'
+    ];
+  }
+  return [
+    'まずは「こんなお悩みありませんか？」と具体的な困りごとを見せる共感型の切り口',
+    '商品を売る前に、チェックリストや診断でニーズを確認する切り口',
+    '価格を出す前に、受けた後の変化や安心材料を伝える切り口'
+  ];
+}
+
+function buildProfile(score) {
+  const customer = shortAnswer(0);
+  const offer = shortAnswer(1);
+  const strength = shortAnswer(2);
+  const story = shortAnswer(3);
+  const prefix = score >= 3.5
+    ? 'ビジネスとしての可能性はありますが、さらに選ばれる理由を明確にすると強くなります。'
+    : '現時点では、対象者や提供価値をもう少し絞ることで伝わりやすくなります。';
+
+  return `${prefix} 想定しているお客様は「${customer}」。提供したい内容は「${offer}」です。強みとして「${strength}」があり、想いや背景には「${story}」があります。SNSプロフィールでは、まず誰のどんな悩みを扱うのかを具体的に書き、その次に受けた後の変化、最後にあなたならではの安心感を伝えるとよいです。売り込み感を出すより、「ひとりで悩んでいる人が、最初の一歩を踏み出せる場所」として見せると、相談につながりやすくなります。`;
+}
+
+function buildMarkdown(evaluation) {
+  const score = Number(evaluation.total.toFixed(1));
+  const scoreText = score.toFixed(1);
+  const label = labelFor(score);
+  const advice = buildAdvice(evaluation);
+  const angles = buildAngles(evaluation);
+  const profile = buildProfile(score);
+  const weak = evaluation.criteria.filter(item => item.score < 3).map(item => item.label);
+  const strong = evaluation.criteria.filter(item => item.score >= 3.5).map(item => item.label);
+
+  return `🔶【1】診断結果（★＋数値＋ラベル）
+
+${starsFor(score)} ${scoreText} / 5.0
+**${label}**
+
+今回の診断は厳しめに見ています。4点台は、ニーズの根拠・対象の具体性・買う理由・導線がかなり揃っている場合に限っています。
+
+📌【2】診断理由
+
+- 想定しているお客様：${shortAnswer(0)}
+- 売りたい商品・サービス：${shortAnswer(1)}
+- あなたの強み・特徴：${shortAnswer(2)}
+- 現在の状況：${shortAnswer(4)}
+
+良い点：${strong.length ? strong.join('、') : '現時点では、強く評価できる要素はまだ限定的です。'}
+
+注意点：${weak.length ? weak.join('、') : '大きく弱い項目は少なめです。ただし、実際の反応確認は必要です。'}
+
+現時点では、入力内容だけを見ると「誰にどう役立つか」は見え始めています。一方で、売れる可能性を高めるには、お客様の実際の声、価格に対する納得感、あなたから買う理由をさらに具体化する必要があります。
+
+🛠【3】改善アドバイス（3〜5個）
+
+${advice.map((item, index) => `${index + 1}. ${item}`).join('\n')}
+
+🔍【4】データ視点の補足
+
+- ニーズの根拠：${shortAnswer(5)}
+- 価格・提供方法：${shortAnswer(6)}
+- 集客導線：${shortAnswer(7)}
+
+データ視点では、まだ「売れる」と断定するには早いです。まずはSNSの反応、LINE登録数、個別相談への申込み率、既存のお客様へのヒアリング結果を見て判断してください。特に、同じ悩みを持つ人が複数いるか、お金を払ってでも解決したい悩みか、今すぐ困っている悩みかを確認することが大切です。
+
+💡【5】売れる切り口のアイデア
+
+${angles.map((item, index) => `${index + 1}. ${item}`).join('\n')}
+
+✍️【6】説明文（SNSプロフィール用・400文字前後）
+
+${profile}
+
+📘【7】まとめ（行動指針）
+
+まずやることは、商品を作り込むことではなく、想定しているお客様の悩みを具体的な言葉で集めることです。そのうえで、小さな無料特典や診断、ミニ相談を用意し、反応を見ながら内容を磨いてください。反応が出た言葉をプロフィール、投稿、LINE導線、告知文に反映していくと、自然に「売れる形」に近づきます。
+
+📎【8】注意事項（免責）
+
+この診断は、入力された情報をもとにした簡易的なビジネス診断です。実際の売上や集客成果を保証するものではありません。最終的な判断は、テスト販売、お客様の声、市場の反応、継続的な改善をもとに行ってください。
+
+${giftText}`;
+}
+
+function renderCriteria(criteriaItems) {
+  const criteria = document.getElementById('criteria');
+  criteria.innerHTML = '';
+  criteriaItems.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'criteria-row';
+    const percent = Math.max(20, Math.round((item.score / 5) * 100));
+    row.innerHTML = `
+      <div>${item.label}</div>
+      <div class="bar"><span class="bar-fill" style="--bar-width:${percent}%"></span></div>
+      <div>${item.score.toFixed(1)}</div>
+    `;
+    criteria.appendChild(row);
+  });
+}
+
+function showResult() {
+  const evaluation = evaluate();
+  const score = Number(evaluation.total.toFixed(1));
+  const scoreText = score.toFixed(1);
+  const markdown = buildMarkdown(evaluation);
+
+  document.getElementById('scoreNumber').textContent = scoreText;
+  document.getElementById('scoreCircle').style.setProperty('--score-deg', `${Math.round((score / 5) * 360)}deg`);
+  document.getElementById('scoreLabel').textContent = labelFor(score);
+  document.getElementById('scoreStars').textContent = starsFor(score);
+  document.getElementById('scoreNote').textContent = '主観的な応援ではなく、ニーズ・具体性・買う理由・価格魅力・導線をもとに厳しめに判定しています。';
+  renderCriteria(evaluation.criteria);
+  document.getElementById('markdownOutput').textContent = markdown;
+
+  questionPanel.style.display = 'none';
+  progress.style.display = 'none';
+  resultPanel.classList.add('active');
+  resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restart() {
+  answers.fill('');
+  selectedChoices.fill(null);
+  currentIndex = 0;
+  resultPanel.classList.remove('active');
+  questionPanel.style.display = 'block';
+  progress.style.display = 'grid';
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyResult() {
+  const text = document.getElementById('markdownOutput').textContent;
+  const button = document.getElementById('copyBtn');
+  const showCopied = () => {
+    button.textContent = 'コピーしました';
+    setTimeout(() => { button.textContent = '診断結果をコピー'; }, 2000);
+  };
+  const showFailed = () => {
+    button.textContent = 'コピーできませんでした';
+    setTimeout(() => { button.textContent = '診断結果をコピー'; }, 2500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showCopied).catch(showFailed);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  try {
+    const copied = document.execCommand('copy');
+    copied ? showCopied() : showFailed();
+  } catch (error) {
+    showFailed();
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
+backBtn.addEventListener('click', goBack);
+nextBtn.addEventListener('click', goNext);
+hintBtn.addEventListener('click', () => hintBox.classList.toggle('active'));
+document.getElementById('copyBtn').addEventListener('click', copyResult);
+document.getElementById('restartBtn').addEventListener('click', restart);
+
+initProgress();
+renderQuestion();
+</script>
+</body>
+</html>
