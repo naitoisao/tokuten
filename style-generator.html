@@ -37,6 +37,18 @@ body {
   min-height: 100vh;
 }
 
+/* ====== BACK LINK ====== */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  color: rgba(255,255,255,0.82);
+  font-size: 12px;
+  text-decoration: none;
+  margin-bottom: 16px;
+  position: relative;
+}
+.back-link:hover { color: #fff; }
+
 /* ====== HEADER ====== */
 .header {
   background: linear-gradient(135deg, #2E3D45 0%, #4A5F6A 40%, #6B8090 100%);
@@ -516,6 +528,7 @@ input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
 <!-- HEADER -->
 <div class="header">
+  <a class="back-link" href="https://tokuten.vercel.app/">← 特典一覧に戻る</a>
   <div class="header-badge">WRITING STYLE GENERATOR v2</div>
   <h1>自分らしい文章プロンプト<br>ジェネレーター</h1>
   <p>5ステップであなたの文体を分析・設定し、<br>ChatGPT・Claude・Gemini で使える<br>カスタムプロンプトを生成します。</p>
