@@ -387,7 +387,13 @@ h2 {
         <div class="benefit-card">
           <div class="badge">追加特典</div>
           <div class="card-title">シェア特典PDF</div>
-          <p class="card-text">投稿をシェアしてくださった方には、非売品PDFもご案内しています。</p>
+          <p class="card-text">投稿をシェアしてくださった方には、非売品PDFも別途ご案内しています。</p>
+        </div>
+        <div class="benefit-card locked-card" id="lockedCard" style="display:none; background: var(--lavender); border: 2px solid rgba(184,111,59,0.3);">
+          <div class="badge" style="background: rgba(200,121,65,0.18);">📩 メルマガ限定</div>
+          <div class="card-title">AI時代の自分らしい発信の仕方【PDF資料】</div>
+          <p class="card-text">AIを使って「自分らしさ」を発信に活かす方法をまとめたPDF資料です。</p>
+          <a href="https://drive.google.com/file/d/1nIsbyUZbAc88ePWOQWavlmNBFKIle494/view?usp=sharing" target="_blank" rel="noopener" style="display:inline-block; margin-top:10px; padding:8px 16px; background:var(--orange); color:#fff; border-radius:6px; font-size:13px; font-weight:700; text-decoration:none;">PDFを受け取る →</a>
         </div>
       </div>
     </div>
@@ -445,5 +451,10 @@ h2 {
 <footer class="footer">
   Powered by <a href="https://simpleworks.jp">simpleworks.jp</a>
 </footer>
+<script>
+  if (new URLSearchParams(window.location.search).get('unlocked') === 'true') {
+    document.getElementById('lockedCard').style.display = 'block';
+  }
+</script>
 </body>
 </html>
